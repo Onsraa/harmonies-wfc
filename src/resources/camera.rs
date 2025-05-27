@@ -12,6 +12,8 @@ pub struct CameraSettings {
     pub elevation_range: Range<f32>,
     pub elevation_goal: Option<f32>,
     pub elevation_smoothing: f32,
+
+    pub translation_speed: f32,
 }
 
 impl Default for CameraSettings {
@@ -27,6 +29,8 @@ impl Default for CameraSettings {
             elevation_range: 1.0..50.0,
             elevation_goal: None,
             elevation_smoothing: 0.8,
+
+            translation_speed: 10.,
         }
     }
 }

@@ -62,3 +62,30 @@ pub fn smooth_elevation(
         }
     }
 }
+
+pub fn translate_camera(
+    mut camera: Single<&mut Transform, With<Camera>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    camera_settings: Res<CameraSettings>,
+    time: Res<Time>,
+) {
+    let speed = camera_settings.translation_speed * time.delta_secs();
+    let mut velocity = Vec2::ZERO;
+
+    if keyboard_input.pressed(KeyCode::KeyW) {
+        velocity.y += speed;
+    }
+    if keyboard_input.pressed(KeyCode::KeyS) {
+        velocity.y -= speed;
+    }
+    if keyboard_input.pressed(KeyCode::KeyA) {
+        velocity.x -= speed;
+    }
+    if keyboard_input.pressed(KeyCode::KeyD) {
+        velocity.x += speed;
+    }
+
+    let translation_vec = camera.forward() * velocity.y + camera.right() * velocity.x;
+    camera.translation.x += translation_vec.x;
+    camera.translation.z += translation_vec.z;
+}
