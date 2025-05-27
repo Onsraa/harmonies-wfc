@@ -1,5 +1,5 @@
 ﻿use crate::resources::camera::CameraSettings;
-use crate::systems::camera::{orbit, setup_camera};
+use crate::systems::camera::{orbit, set_elevation, setup_camera, smooth_elevation};
 use crate::systems::window::{hide_cursor, show_cursor};
 use bevy::input::common_conditions::{input_just_released, input_pressed};
 use bevy::prelude::{App, IntoScheduleConfigs, MouseButton, Plugin, Startup, Update};
@@ -17,6 +17,7 @@ impl Plugin for CameraPlugin {
             .add_systems(
                 Update,
                 show_cursor.run_if(input_just_released(MouseButton::Right)),
-            );
+            )
+            .add_systems(Update, (set_elevation, smooth_elevation));
     }
 }

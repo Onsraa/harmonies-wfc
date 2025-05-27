@@ -7,6 +7,11 @@ pub struct CameraSettings {
     pub pitch_speed: f32,
     pub pitch_range: Range<f32>,
     pub yaw_speed: f32,
+
+    pub elevation_speed: f32,
+    pub elevation_range: Range<f32>,
+    pub elevation_goal: Option<f32>,
+    pub elevation_smoothing: f32,
 }
 
 impl Default for CameraSettings {
@@ -17,6 +22,11 @@ impl Default for CameraSettings {
             pitch_speed: 0.003,
             pitch_range: -pitch_limit..pitch_limit,
             yaw_speed: 0.004,
+
+            elevation_speed: 1.,
+            elevation_range: 1.0..50.0,
+            elevation_goal: None,
+            elevation_smoothing: 0.8,
         }
     }
 }
