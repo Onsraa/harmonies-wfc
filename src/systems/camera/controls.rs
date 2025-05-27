@@ -2,7 +2,7 @@
 use bevy::input::mouse::{AccumulatedMouseMotion, AccumulatedMouseScroll};
 use bevy::prelude::*;
 
-pub fn orbit(
+pub fn rotate(
     mut camera: Single<&mut Transform, With<Camera>>,
     camera_settings: Res<CameraSettings>,
     mouse_motion: Res<AccumulatedMouseMotion>,
@@ -63,7 +63,7 @@ pub fn smooth_elevation(
     }
 }
 
-pub fn translate_camera(
+pub fn translate(
     mut camera: Single<&mut Transform, With<Camera>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     camera_settings: Res<CameraSettings>,
