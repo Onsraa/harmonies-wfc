@@ -1,4 +1,3 @@
-use bevy::color::palettes::css::SILVER;
 use bevy::prelude::*;
 
 pub fn initialize(
@@ -17,8 +16,8 @@ pub fn initialize(
         Transform::from_xyz(8.0, 16.0, 8.0),
     ));
 
-    commands.spawn((
-        Mesh3d(meshes.add(Plane3d::default().mesh().size(50.0, 50.0).subdivisions(10))),
-        MeshMaterial3d(materials.add(Color::from(SILVER))),
-    ));
+    // commands.spawn((
+    //     Mesh3d(meshes.add(Plane3d::default().mesh().size(50.0, 50.0).subdivisions(10))),
+    //     MeshMaterial3d(materials.add(Color::from(SILVER))),
+    // ));
 }

@@ -4,14 +4,16 @@ mod plugins;
 mod resources;
 mod systems;
 
-use bevy::prelude::*;
-use crate::plugins::setup::SetupPlugin;
 use crate::plugins::camera::CameraPlugin;
+use crate::plugins::grid::GridPlugin;
+use crate::plugins::setup::SetupPlugin;
+use bevy::prelude::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(SetupPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(GridPlugin)
         .run();
 }

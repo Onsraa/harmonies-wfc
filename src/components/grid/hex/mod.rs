@@ -1,5 +1,7 @@
-﻿pub mod ops;
+﻿pub mod display;
+pub mod ops;
 
+use crate::components::grid::Orientation;
 use bevy::prelude::Component;
 
 #[derive(Component, PartialEq, Eq, Hash, Clone, Copy, Debug)]
@@ -60,6 +62,6 @@ impl Hex {
 
     #[inline]
     pub fn distance_from(&self, other: Hex) -> i32 {
-        (self - other).length()
+        (*self - other).length()
     }
 }
