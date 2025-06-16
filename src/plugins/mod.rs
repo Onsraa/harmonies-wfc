@@ -1,4 +1,5 @@
 pub mod camera;
 pub mod setup;
-pub mod wfc;
+pub mod ui;
 pub mod visualisation;
+pub mod wfc;

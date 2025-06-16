@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 use std::collections::{HashMap, HashSet, VecDeque};
-
+use rand::Rng;
 use crate::components::{
     hex_coord::HexCoord,
     tile::{RiverConstraints, TileType},
 };
+use crate::resources::tile_weights::TileWeights;
 use super::cell::WfcCell;
 
 /// Solveur Wave Function Collapse pour grille hexagonale 3D
@@ -116,8 +117,8 @@ impl WfcSolver {
 
         // Choisit aléatoirement parmi les possibilités valides
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        let chosen = valid_possibilities[rng.gen_range(0..valid_possibilities.len())];
+        let mut rng = rand::rng();
+        let chosen = valid_possibilities[rng.random_range(0..valid_possibilities.len())];
 
         // Met à jour la cellule
         let cell = self.cells.get_mut(&coord).unwrap();
@@ -230,5 +231,82 @@ impl WfcSolver {
     pub fn get_tile_at(&self, coord: &HexCoord) -> Option<TileType> {
         self.cells.get(coord)
             .and_then(|cell| cell.get_tile_type())
+    }
+
+    fn collapse_cell_weighted(&mut self, coord: HexCoord, tile_weights: &TileWeights) -> Result<(), String> {
+        let cell = self.cells.get(&coord)
+            .ok_or("Cellule introuvable")?;
+
+        if cell.possibilities.is_empty() {
+            return Err("Cellule sans possibilités".to_string());
+        }
+
+        // Filtre les possibilités selon les contraintes spéciales
+        let valid_possibilities: Vec<_> = cell.possibilities
+            .iter()
+            .filter(|&&tile_type| {
+                match tile_type {
+                    TileType::River => {
+                        // Vérifie les contraintes rivière
+                        self.river_constraints.can_place_river(coord.q, coord.r)
+                    }
+                    _ => true,
+                }
+            })
+            .cloned()
+            .collect();
+
+        if valid_possibilities.is_empty() {
+            // Si aucune possibilité valide, on met Empty si on est en hauteur
+            if coord.height > 0 {
+                let cell = self.cells.get_mut(&coord).unwrap();
+                cell.possibilities.clear();
+                cell.possibilities.insert(TileType::Empty);
+                cell.collapsed = true;
+                return Ok(());
+            }
+            return Err("Aucune possibilité valide".to_string());
+        }
+
+        // Utilise le choix pondéré au lieu du choix aléatoire uniforme
+        let chosen = tile_weights.weighted_choice(&valid_possibilities, coord.height)
+            .ok_or("Erreur lors du choix pondéré")?;
+
+        // Met à jour la cellule
+        let cell = self.cells.get_mut(&coord).unwrap();
+        cell.possibilities.clear();
+        cell.possibilities.insert(chosen);
+        cell.collapsed = true;
+
+        // Met à jour les contraintes globales
+        if chosen == TileType::River {
+            self.river_constraints.river_positions.insert((coord.q, coord.r));
+        }
+
+        Ok(())
+    }
+
+    /// Lance la résolution avec pondération
+    pub fn solve_weighted(&mut self, tile_weights: &TileWeights) -> Result<(), String> {
+        // Boucle principale
+        loop {
+            // Trouve la cellule avec l'entropie minimale
+            match self.find_min_entropy_cell() {
+                Some(coord) => {
+                    // Utilise la nouvelle méthode avec poids
+                    self.collapse_cell_weighted(coord, tile_weights)?;
+
+                    // Propage les contraintes
+                    self.propagate(coord)?;
+                }
+                None => {
+                    // Plus de cellules à effondrer
+                    self.is_complete = true;
+                    break;
+                }
+            }
+        }
+
+        Ok(())
     }
 }

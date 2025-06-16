@@ -9,14 +9,15 @@ use crate::plugins::camera::CameraPlugin;
 use crate::plugins::setup::SetupPlugin;
 use crate::plugins::wfc::WfcPlugin;
 use bevy::prelude::*;
+use crate::plugins::ui::UiPlugin;
 use crate::plugins::visualisation::VisualizationPlugin;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
         .add_plugins(SetupPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(WfcPlugin)
         .add_plugins(VisualizationPlugin)
+        .add_plugins(UiPlugin)
         .run();
 }
