@@ -26,7 +26,7 @@ impl Plugin for WfcPlugin {
 
         // Génère automatiquement au démarrage
         app.add_systems(Startup, |mut events: EventWriter<GenerateWorldEvent>| {
-            events.send(GenerateWorldEvent);
+            events.write(GenerateWorldEvent);
         });
     }
 }

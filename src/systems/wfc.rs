@@ -1,7 +1,8 @@
-use bevy::prelude::*;
 use crate::components::tile::{Tile, TileType};
 use crate::resources::grid::HexGrid;
+use crate::resources::tile_weights::TileWeights;
 use crate::wfc::solver::WfcSolver;
+use bevy::prelude::*;
 
 /// Événement pour déclencher une nouvelle génération
 #[derive(Event)]
@@ -12,11 +13,12 @@ pub fn wfc_generation_system(
     mut commands: Commands,
     mut grid: ResMut<HexGrid>,
     mut solver: ResMut<WfcSolver>,
+    tile_weights: Res<TileWeights>,
     mut events: EventReader<GenerateWorldEvent>,
     tile_query: Query<Entity, With<Tile>>,
 ) {
     for _event in events.read() {
-        info!("Démarrage de la génération WFC...");
+        info!("Démarrage de la génération WFC avec pondération...");
 
         // Supprime les anciennes tuiles
         for entity in tile_query.iter() {
@@ -29,7 +31,8 @@ pub fn wfc_generation_system(
         // Réinitialise le solveur
         *solver = WfcSolver::new(grid.width, grid.height);
 
-        // Lance la résolution
+        // Lance la résolution avec pondération
+        //match solver.solve_weighted(&tile_weights) {
         match solver.solve() {
             Ok(()) => {
                 info!("Génération WFC réussie!");
@@ -50,6 +53,10 @@ pub fn wfc_generation_system(
                 }
 
                 info!("Nombre de tuiles générées: {}", grid.tiles.len());
+
+                // Affiche les statistiques des rivières
+                let river_count = grid.count_tiles_of_type(TileType::River);
+                info!("Rivières générées: {} segments", river_count);
             }
             Err(e) => {
                 error!("Erreur de génération WFC: {}", e);
@@ -78,6 +85,9 @@ pub fn wfc_debug_system(
         }
 
         // Statistiques rivières
-        info!("Rivières: {} segments", solver.river_constraints.river_positions.len());
+        info!(
+            "Rivières: {} segments",
+            solver.river_constraints.river_positions.len()
+        );
     }
 }
