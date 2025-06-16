@@ -8,6 +8,7 @@ use bevy::prelude::*;
 use crate::plugins::setup::SetupPlugin;
 use crate::plugins::camera::CameraPlugin;
 
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
