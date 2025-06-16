@@ -5,6 +5,20 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui};
 use egui::SliderClamping;
 
+/// Condition pour vérifier si l'UI doit être mise à jour
+pub fn should_update_ui(
+    tile_weights: Res<TileWeights>,
+) -> bool {
+    tile_weights.show_ui
+}
+
+/// Condition pour vérifier si l'aide doit être affichée
+pub fn should_show_help(
+    keyboard: Res<ButtonInput<KeyCode>>,
+) -> bool {
+    keyboard.pressed(KeyCode::KeyP)
+}
+
 /// Système pour l'interface utilisateur de gestion des poids
 pub fn tile_weights_ui_system(
     mut contexts: EguiContexts,

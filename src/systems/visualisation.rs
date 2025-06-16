@@ -8,23 +8,40 @@ use crate::components::{
 #[derive(Component)]
 pub struct TileVisual;
 
-/// Système de rendu des tuiles sous forme de cylindres
-pub fn render_tiles_system(
+/// Resource pour stocker le mesh partagé
+#[derive(Resource)]
+pub struct SharedMeshes {
+    pub cylinder: Handle<Mesh>,
+}
+
+/// Système d'initialisation des meshes partagés
+pub fn setup_shared_meshes(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
+) {
+    let cylinder = meshes.add(Cylinder::new(0.4, 0.3));
+    commands.insert_resource(SharedMeshes { cylinder });
+}
+
+/// Système de rendu des tuiles optimisé - ne recrée que ce qui est nécessaire
+pub fn render_tiles_system(
+    mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    tile_query: Query<&Tile, Without<TileVisual>>,
+    shared_meshes: Res<SharedMeshes>,
+    new_tiles: Query<(Entity, &Tile), Without<TileVisual>>,
+    mut events: EventReader<crate::systems::wfc::GenerateWorldEvent>,
     visual_query: Query<Entity, With<TileVisual>>,
 ) {
-    // Supprime les anciennes visualisations quand on régénère
-    for entity in visual_query.iter() {
-        commands.entity(entity).despawn_recursive();
+    // Ne supprime les visuels QUE lors d'une régénération
+    if !events.is_empty() {
+        for entity in visual_query.iter() {
+            commands.entity(entity).despawn();
+        }
+        events.clear();
     }
 
-    // Crée un cylindre pour chaque tuile
-    let cylinder_mesh = meshes.add(Cylinder::new(0.4, 0.3));
-
-    for tile in tile_query.iter() {
+    // Crée uniquement les visuels pour les NOUVELLES tuiles
+    for (entity, tile) in new_tiles.iter() {
         // Ne pas afficher les tuiles Empty
         if tile.tile_type == TileType::Empty {
             continue;
@@ -49,13 +66,16 @@ pub fn render_tiles_system(
         // Position dans le monde
         let world_pos = tile.coord.to_world_pos();
 
-        // Crée le cylindre
+        // Crée le cylindre - utilise le mesh partagé
         commands.spawn((
             TileVisual,
-            Mesh3d(cylinder_mesh.clone()),
+            Mesh3d(shared_meshes.cylinder.clone()),
             MeshMaterial3d(material),
             Transform::from_translation(world_pos),
         ));
+
+        // Marque l'entité tuile comme ayant un visuel
+        commands.entity(entity).insert(TileVisual);
     }
 }
 
