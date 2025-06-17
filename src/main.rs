@@ -1,16 +1,17 @@
-#![feature(new_range_api)]
-extern crate core;
-
 mod components;
 mod globals;
 mod plugins;
 mod resources;
 mod systems;
+mod wfc;
 
 use crate::plugins::camera::CameraPlugin;
 use crate::plugins::grid::GridPlugin;
 use crate::plugins::setup::SetupPlugin;
+use crate::plugins::wfc::WfcPlugin;
+use crate::plugins::visualisation::VisualizationPlugin;
 use bevy::prelude::*;
+
 
 fn main() {
     App::new()
@@ -18,5 +19,8 @@ fn main() {
         .add_plugins(SetupPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(GridPlugin)
+        .add_plugins(WfcPlugin)
+        .add_plugins(VisualizationPlugin)
+        //.add_plugins(UiPlugin)
         .run();
 }

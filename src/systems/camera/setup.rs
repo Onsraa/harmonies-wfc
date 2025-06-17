@@ -1,4 +1,4 @@
-﻿use bevy::prelude::{Camera3d, Commands, Transform, Vec3};
+﻿use bevy::prelude::*;
 
 pub fn setup_camera(mut commands: Commands) {
     commands.spawn((
