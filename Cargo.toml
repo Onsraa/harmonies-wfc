@@ -6,8 +6,11 @@ edition = "2024"
 [dependencies]
 bevy = { version = "0.16", features = ["bevy_gltf"] }
 bevy_dylib = { version = "0.16.0-rc.4" }
+
 rand = "0.9.1"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
+
+
 
 # ----------- OPTIMIZATIONS -----------
 # Enable a small amount of optimization in the dev profile.
