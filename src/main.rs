@@ -11,6 +11,7 @@ use crate::plugins::wfc::WfcPlugin;
 use bevy::prelude::*;
 use crate::plugins::visualisation::VisualizationPlugin;
 
+
 fn main() {
     App::new()
         .add_plugins(SetupPlugin)
