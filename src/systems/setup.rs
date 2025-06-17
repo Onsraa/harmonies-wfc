@@ -21,13 +21,13 @@ pub fn initialize(
 
     // test de Spawn pour vérifier que les cellules sont bien créées
     // Load and spawn your GLTF model
-    //let rock_handle: Handle<Scene> = asset_server.load("tiles/tile_rock.gltf");
-    // let rock_handle = asset_server.load::<Scene>("tiles/tile_rock.gltf#Scene0");
-    // commands.spawn((
-    //     SceneRoot(rock_handle),
-    //     Transform::from_xyz(0.0, 0.0, 0.0)
-    //         .with_scale(Vec3::splat(1.0)),
-    // ));
+    let rock_handle: Handle<Scene> = asset_server.load("tiles/tile_rock.gltf");
+    let rock_handle = asset_server.load::<Scene>("tiles/tile_rock.gltf#Scene0");
+    commands.spawn((
+        SceneRoot(rock_handle),
+        Transform::from_xyz(0.0, 0.0, 0.0)
+            .with_scale(Vec3::splat(1.0)),
+    ));
 
     let leave_anim = asset_server.load::<Scene>("tiles/leaves_animation.gltf#Scene0");
     commands.spawn((
