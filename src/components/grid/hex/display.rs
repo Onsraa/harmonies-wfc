@@ -15,8 +15,8 @@ pub struct HexInstances {
 #[inline]
 pub fn hex_to_pixel(layout: &GridLayout, hex: Hex) -> Vec2 {
     let Orientation { f0, f1, f2, f3, .. } = layout.orientation;
-    let x = (f0 * hex.q() as f32 + f1 * hex.r() as f32) * layout.grid_size.x;
-    let y = (f2 * hex.q() as f32 + f3 * hex.r() as f32) * layout.grid_size.y;
+    let x = (f0 * hex.q() as f32 + f1 * hex.r() as f32) * layout.hex_size;
+    let y = (f2 * hex.q() as f32 + f3 * hex.r() as f32) * layout.hex_size;
     Vec2::new(x, y) + layout.origin
 }
 

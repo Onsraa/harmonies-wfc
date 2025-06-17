@@ -14,7 +14,7 @@ impl Default for GridLayout {
     fn default() -> Self {
         GridLayout {
             orientation: Orientation::POINTY,
-            grid_size: Vec2::new(10.0, 10.0),
+            grid_size: Vec2::new(100.0, 100.0),
             hex_size: 2.0,
             origin: Vec2::ZERO,
         }
