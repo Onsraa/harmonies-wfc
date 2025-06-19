@@ -28,7 +28,8 @@ pub fn set_elevation(
     mouse_scroll: Res<AccumulatedMouseScroll>,
 ) {
     let delta = -mouse_scroll.delta;
-    let delta_elevation = delta.y * camera_settings.elevation_speed.powi(2);
+    let scale_factor = (camera.translation.y * 0.1 + 1.0).ln() + 1.0;
+    let delta_elevation = delta.y * camera_settings.elevation_speed * scale_factor;
 
     camera_settings.elevation_goal = Some(
         camera_settings
@@ -69,7 +70,8 @@ pub fn translate(
     camera_settings: Res<CameraSettings>,
     time: Res<Time>,
 ) {
-    let speed = camera_settings.translation_speed * time.delta_secs();
+    let height_scale = (camera.translation.y / 10.).sqrt().max(15.0);
+    let speed = camera_settings.translation_speed * time.delta_secs() * height_scale;
     let mut velocity = Vec2::ZERO;
 
     if keyboard_input.pressed(KeyCode::KeyW) {
@@ -85,7 +87,13 @@ pub fn translate(
         velocity.x += speed;
     }
 
-    let translation_vec = camera.forward() * velocity.y + camera.right() * velocity.x;
+    let forward = camera.forward();
+    let horizontal_forward = Vec3::new(forward.x, 0.0, forward.z).normalize();
+
+    let right = camera.right();
+    let horizontal_right = Vec3::new(right.x, 0.0, right.z).normalize();
+
+    let translation_vec = horizontal_forward * velocity.y + horizontal_right * velocity.x;
     camera.translation.x += translation_vec.x;
     camera.translation.z += translation_vec.z;
 }

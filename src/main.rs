@@ -6,16 +6,18 @@ mod systems;
 mod wfc;
 
 use crate::plugins::camera::CameraPlugin;
+use crate::plugins::grid::GridPlugin;
 use crate::plugins::setup::SetupPlugin;
+use crate::plugins::visualisation::VisualizationPlugin;
 use crate::plugins::wfc::WfcPlugin;
 use bevy::prelude::*;
-use crate::plugins::visualisation::VisualizationPlugin;
-
 
 fn main() {
     App::new()
+        .add_plugins(MeshPickingPlugin)
         .add_plugins(SetupPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(GridPlugin)
         .add_plugins(WfcPlugin)
         .add_plugins(VisualizationPlugin)
         //.add_plugins(UiPlugin)

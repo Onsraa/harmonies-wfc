@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-/// Coordonnées hexagonales en système axial avec hauteur
 #[derive(Component, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct HexCoord {
     pub q: i32,
@@ -17,20 +16,15 @@ impl HexCoord {
         Self { q, r, height: 0 }
     }
 
-    /// Obtient le 3ème axe implicite dans le système cubique
-    pub fn s(&self) -> i32 {
-        -self.q - self.r
-    }
-
     /// Voisins dans le même niveau de hauteur
     pub fn neighbors(&self) -> [HexCoord; 6] {
         [
-            HexCoord::new(self.q + 1, self.r, self.height),     // E
+            HexCoord::new(self.q + 1, self.r, self.height), // E
             HexCoord::new(self.q + 1, self.r - 1, self.height), // NE
-            HexCoord::new(self.q, self.r - 1, self.height),     // NW
-            HexCoord::new(self.q - 1, self.r, self.height),     // W
+            HexCoord::new(self.q, self.r - 1, self.height), // NW
+            HexCoord::new(self.q - 1, self.r, self.height), // W
             HexCoord::new(self.q - 1, self.r + 1, self.height), // SW
-            HexCoord::new(self.q, self.r + 1, self.height),     // SE
+            HexCoord::new(self.q, self.r + 1, self.height), // SE
         ]
     }
 

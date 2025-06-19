@@ -1,8 +1,10 @@
+use crate::components::grid::hex::Hex;
+use crate::components::grid::tile::tile_type::TileType;
+use crate::components::grid::tile::{Tile, TileStack};
+use crate::components::hex_coord::HexCoord;
+use crate::globals::{TILE_GAP, TILE_HEIGHT};
 use bevy::prelude::*;
-use crate::components::{
-    hex_coord::HexCoord,
-    tile::{Tile, TileType},
-};
+use egui::ahash::HashMap;
 
 /// Marqueur pour les entités visuelles des tuiles
 #[derive(Component)]
@@ -15,11 +17,8 @@ pub struct SharedMeshes {
 }
 
 /// Système d'initialisation des meshes partagés
-pub fn setup_shared_meshes(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-) {
-    let cylinder = meshes.add(Cylinder::new(0.4, 0.3));
+pub fn setup_shared_meshes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+    let cylinder = meshes.add(Cylinder::new(1., TILE_HEIGHT));
     commands.insert_resource(SharedMeshes { cylinder });
 }
 
@@ -29,6 +28,7 @@ pub fn render_tiles_system(
     mut materials: ResMut<Assets<StandardMaterial>>,
     shared_meshes: Res<SharedMeshes>,
     new_tiles: Query<(Entity, &Tile), Without<TileVisual>>,
+    mut hexes: Query<(&Hex, &Transform, &mut TileStack)>,
     mut events: EventReader<crate::systems::wfc::GenerateWorldEvent>,
     visual_query: Query<Entity, With<TileVisual>>,
 ) {
@@ -40,21 +40,18 @@ pub fn render_tiles_system(
         events.clear();
     }
 
-    // Crée uniquement les visuels pour les NOUVELLES tuiles
+    let mut tile_to_material: HashMap<Entity, Handle<StandardMaterial>> = HashMap::default();
     for (entity, tile) in new_tiles.iter() {
-        // Ne pas afficher les tuiles Empty
         if tile.tile_type == TileType::Empty {
             continue;
         }
-
-        // Couleur selon le type de tuile
         let color = match tile.tile_type {
-            TileType::City => Color::srgb(1.0, 0.0, 0.0),    // Rouge
-            TileType::River => Color::srgb(0.0, 0.5, 1.0),   // Bleu
-            TileType::Rock => Color::srgb(0.5, 0.5, 0.5),    // Gris
-            TileType::Trunk => Color::srgb(0.4, 0.2, 0.0),   // Marron
-            TileType::Leaves => Color::srgb(0.0, 0.8, 0.0),  // Vert
-            TileType::Field => Color::srgb(1.0, 1.0, 0.0),   // Jaune
+            TileType::City => Color::srgb(1.0, 0.0, 0.0),   // Rouge
+            TileType::River => Color::srgb(0.0, 0.5, 1.0),  // Bleu
+            TileType::Rock => Color::srgb(0.5, 0.5, 0.5),   // Gris
+            TileType::Trunk => Color::srgb(0.4, 0.2, 0.0),  // Marron
+            TileType::Leaves => Color::srgb(0.0, 0.8, 0.0), // Vert
+            TileType::Field => Color::srgb(1.0, 1.0, 0.0),  // Jaune
             TileType::Empty => Color::NONE,
         };
 
@@ -63,19 +60,24 @@ pub fn render_tiles_system(
             ..default()
         });
 
-        // Position dans le monde
-        let world_pos = tile.coord.to_world_pos();
+        tile_to_material.insert(entity, material);
+    }
 
-        // Crée le cylindre - utilise le mesh partagé
-        commands.spawn((
-            TileVisual,
-            Mesh3d(shared_meshes.cylinder.clone()),
-            MeshMaterial3d(material),
-            Transform::from_translation(world_pos),
-        ));
-
-        // Marque l'entité tuile comme ayant un visuel
-        commands.entity(entity).insert(TileVisual);
+    for (hex, transform, tile_stack) in hexes.iter_mut() {
+        for (i, tile) in tile_stack.tiles.iter().enumerate() {
+            if let Some(material) = tile_to_material.get(tile) {
+                commands.entity(*tile).insert((
+                    TileVisual,
+                    Mesh3d(shared_meshes.cylinder.clone()),
+                    MeshMaterial3d(material.clone()),
+                    Transform::from_xyz(
+                        transform.translation.x,
+                        TILE_HEIGHT / 2.0 + i as f32 * (TILE_HEIGHT + TILE_GAP),
+                        transform.translation.z,
+                    ),
+                ));
+            }
+        }
     }
 }
 

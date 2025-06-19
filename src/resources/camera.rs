@@ -25,10 +25,10 @@ impl Default for CameraSettings {
             yaw_speed: 0.004,
 
             elevation_speed: 1.,
-            elevation_range: 1.0..50.0,
+            elevation_range: 1.0..300.0,
             elevation_goal: None,
 
-            translation_speed: 10.,
+            translation_speed: 3.,
         }
     }
 }

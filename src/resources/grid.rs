@@ -1,42 +1,54 @@
-use bevy::prelude::*;
+use crate::components::grid::tile::tile_type::TileType;
+use crate::components::grid::Orientation;
+use crate::globals::{DEFAULT_GRID_SIZE, MAX_HEIGHT};
+use crate::wfc::cell::CellCoord;
+use bevy::math::Vec2;
+use bevy::prelude::Resource;
 use std::collections::HashMap;
-use crate::components::{hex_coord::HexCoord, tile::TileType};
 
-/// Grille hexagonale 3D du monde
-#[derive(Resource, Default)]
-pub struct HexGrid {
-    pub tiles: HashMap<HexCoord, TileType>,
+#[derive(Resource)]
+pub struct GridLayout {
+    pub orientation: Orientation,
     pub width: i32,
-    pub height: i32,
+    pub length: i32,
+    pub max_height: u8,
+    pub hex_size: f32,
+    pub origin: Vec2,
 }
 
-impl HexGrid {
-    pub fn new(width: i32, height: i32) -> Self {
-        Self {
-            tiles: HashMap::new(),
-            width,
-            height,
+impl Default for GridLayout {
+    fn default() -> Self {
+        GridLayout {
+            orientation: Orientation::POINTY,
+            width: DEFAULT_GRID_SIZE,
+            length: DEFAULT_GRID_SIZE,
+            max_height: MAX_HEIGHT,
+            hex_size: 2.0,
+            origin: Vec2::ZERO,
         }
     }
+}
 
-    /// Ajoute une tuile à la grille
-    pub fn set_tile(&mut self, coord: HexCoord, tile_type: TileType) {
+#[derive(Resource, Default)]
+pub struct TileGrid {
+    pub tiles: HashMap<CellCoord, TileType>,
+}
+
+impl TileGrid {
+    pub fn new() -> Self {
+        Self {
+            tiles: HashMap::new(),
+        }
+    }
+    pub fn set_tile(&mut self, coord: CellCoord, tile_type: TileType) {
         self.tiles.insert(coord, tile_type);
     }
-
-    /// Obtient une tuile de la grille
-    pub fn get_tile(&self, coord: &HexCoord) -> Option<&TileType> {
+    pub fn get_tile(&self, coord: &CellCoord) -> Option<&TileType> {
         self.tiles.get(coord)
     }
-
-    /// Compte le nombre de tuiles d'un certain type
     pub fn count_tiles_of_type(&self, tile_type: TileType) -> usize {
-        self.tiles.values()
-            .filter(|&&t| t == tile_type)
-            .count()
+        self.tiles.values().filter(|&&t| t == tile_type).count()
     }
-
-    /// Vide la grille
     pub fn clear(&mut self) {
         self.tiles.clear();
     }

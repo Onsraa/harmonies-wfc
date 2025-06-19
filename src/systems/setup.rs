@@ -1,39 +1,27 @@
-use bevy::color::palettes::css::SILVER;
 use bevy::prelude::*;
 
-
-pub fn initialize(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    asset_server: Res<AssetServer>,
-    ) {
-
+pub fn initialize(mut commands: Commands, asset_server: Res<AssetServer>) {
     // test de Spawn pour vérifier que les cellules sont bien créées
     // Load and spawn your GLTF model
-    let rock_handle = asset_server.load::<Scene>("tiles/tile_rock.gltf#Scene0");
+    let rock_handle = asset_server.load::<Scene>("tile/tile_rock.gltf#Scene0");
     commands.spawn((
         SceneRoot(rock_handle),
-        Transform::from_xyz(0.0, 0.0, 0.0)
-            .with_scale(Vec3::splat(1.0)),
+        Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(1.0)),
     ));
 
-    let leave_anim = asset_server.load::<Scene>("tiles/leaves_animation.gltf#Scene0");
+    let leave_anim = asset_server.load::<Scene>("tile/leaves_animation.gltf#Scene0");
     commands.spawn((
         SceneRoot(leave_anim),
-        Transform::from_xyz(0.0, 0.0, 0.0)
-            .with_scale(Vec3::splat(1.0)),
+        Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(1.0)),
     ));
 
-    
     commands.spawn((
-        PointLight {
+        DirectionalLight {
+            color: Color::WHITE,
+            illuminance: 2000.0,
             shadows_enabled: true,
-            intensity: 10_000_000.,
-            range: 100.0,
-            shadow_depth_bias: 0.2,
             ..default()
         },
-        Transform::from_xyz(8.0, 16.0, 8.0),
+        Transform::from_xyz(0.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 }

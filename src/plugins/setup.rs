@@ -1,8 +1,9 @@
+use crate::resources::tile_weights::TileWeights;
+use crate::systems::setup::initialize;
+use crate::systems::setup::*;
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy::window::PresentMode;
-use crate::resources::tile_weights::TileWeights;
-use crate::systems::setup::initialize;
 
 pub struct SetupPlugin;
 
