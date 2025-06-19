@@ -1,3 +1,4 @@
+use crate::globals::MAX_HEIGHT;
 use bevy::prelude::*;
 
 #[derive(Component, Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -30,7 +31,7 @@ impl HexCoord {
 
     /// Cellule au-dessus
     pub fn above(&self) -> Option<HexCoord> {
-        if self.height < 2 {
+        if self.height < MAX_HEIGHT {
             Some(HexCoord::new(self.q, self.r, self.height + 1))
         } else {
             None

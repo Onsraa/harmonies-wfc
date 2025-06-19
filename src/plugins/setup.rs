@@ -1,4 +1,5 @@
 use crate::resources::tile_weights::TileWeights;
+use crate::systems::menu::GameState;
 use crate::systems::setup::initialize;
 use crate::systems::setup::*;
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
@@ -23,7 +24,12 @@ impl Plugin for SetupPlugin {
             LogDiagnosticsPlugin::default(),
             FrameTimeDiagnosticsPlugin::default(),
         ));
-        app.add_systems(Startup, initialize);
+
+        // Add the state
+        app.init_state::<GameState>();
+
+        // Only initialize game world when entering the game state
+        app.add_systems(OnEnter(GameState::InGame), initialize);
         app.init_resource::<TileWeights>();
     }
 }

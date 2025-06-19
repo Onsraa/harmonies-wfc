@@ -29,7 +29,6 @@ pub fn wfc_generation_system(
             commands.entity(entity).despawn();
         }
         grid.clear();
-
         *solver = WfcSolver::new(
             grid_layout.width * 2,
             grid_layout.length * 2,

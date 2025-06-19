@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+
 pub fn initialize(mut commands: Commands, asset_server: Res<AssetServer>) {
     // test de Spawn pour vérifier que les cellules sont bien créées
     // Load and spawn your GLTF model
@@ -14,7 +15,6 @@ pub fn initialize(mut commands: Commands, asset_server: Res<AssetServer>) {
         SceneRoot(leave_anim),
         Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(1.0)),
     ));
-
     commands.spawn((
         DirectionalLight {
             color: Color::WHITE,
