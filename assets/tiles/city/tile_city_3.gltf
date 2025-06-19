@@ -15,13 +15,18 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"river"
+			"name":"ville_3",
+			"translation":[
+				0.08535812795162201,
+				1.260621190071106,
+				0.0031477827578783035
+			]
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material.001",
+			"name":"Material.005",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -33,7 +38,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube.003",
+			"name":"Cube.008",
 			"primitives":[
 				{
 					"attributes":{
@@ -56,69 +61,69 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Material",
-			"uri":"water_texture.png"
+			"name":"ville Base Color",
+			"uri":"ville%20Base%20Color.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1913,
+			"count":2205,
 			"max":[
-				0.8866704702377319,
-				0.5490092635154724,
-				1.0130577087402344
+				0.8900338411331177,
+				1.114451289176941,
+				1.0340062379837036
 			],
 			"min":[
-				-0.9028466939926147,
-				-0.5528244376182556,
-				-0.9932742714881897
+				-0.8834384083747864,
+				-1.353214979171753,
+				-0.989330530166626
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1913,
+			"count":2205,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1913,
+			"count":2205,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":3024,
+			"count":4776,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":22956,
+			"byteLength":26460,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":22956,
-			"byteOffset":22956,
+			"byteLength":26460,
+			"byteOffset":26460,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":15304,
-			"byteOffset":45912,
+			"byteLength":17640,
+			"byteOffset":52920,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":6048,
-			"byteOffset":61216,
+			"byteLength":9552,
+			"byteOffset":70560,
 			"target":34963
 		}
 	],
@@ -130,8 +135,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":67264,
-			"uri":"tile_water.bin"
+			"byteLength":80112,
+			"uri":"tile_city_3.bin"
 		}
 	]
 }
