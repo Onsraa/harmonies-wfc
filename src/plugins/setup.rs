@@ -1,11 +1,9 @@
-use crate::components::grid::Grid;
-use crate::systems::cell::*;
-use crate::systems::setup::*;
-use bevy::prelude::*;
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
-use bevy::window::PresentMode;
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::setup::initialize;
+use crate::systems::setup::*;
+use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+use bevy::prelude::*;
+use bevy::window::PresentMode;
 
 pub struct SetupPlugin;
 

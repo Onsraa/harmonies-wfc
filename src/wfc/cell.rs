@@ -1,20 +1,59 @@
-use crate::components::{hex_coord::HexCoord, tile::TileType};
+use crate::components::grid::tile::tile_type::TileType;
 use std::collections::HashSet;
+
+#[derive(Hash, Eq, PartialEq, Clone, Debug)]
+pub struct CellCoord(pub i32, pub i32, pub u8);
+
+impl CellCoord {
+    #[inline]
+    pub fn at_ground(q: i32, r: i32) -> Self {
+        Self { 0: q, 1: r, 2: 0 }
+    }
+
+    #[inline]
+    pub fn neighbors(&self) -> [CellCoord; 6] {
+        [
+            CellCoord(self.0 + 1, self.1, self.2),     // E
+            CellCoord(self.0 + 1, self.1 - 1, self.2), // NE
+            CellCoord(self.0, self.1 - 1, self.2),     // NW
+            CellCoord(self.0 - 1, self.1, self.2),     // W
+            CellCoord(self.0 - 1, self.1 + 1, self.2), // SW
+            CellCoord(self.0, self.1 + 1, self.2),     // SE
+        ]
+    }
+
+    #[inline]
+    pub fn above(&self) -> Option<CellCoord> {
+        if self.2 < 2 {
+            Some(CellCoord(self.0, self.1, self.2 + 1))
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn below(&self) -> Option<CellCoord> {
+        if self.2 > 0 {
+            Some(CellCoord(self.0, self.1, self.2 - 1))
+        } else {
+            None
+        }
+    }
+}
 
 /// Cellule du WFC
 #[derive(Clone, Debug)]
 pub struct WfcCell {
-    pub coord: HexCoord,
     pub possibilities: HashSet<TileType>,
     pub collapsed: bool,
 }
 
 impl WfcCell {
-    pub fn new(coord: HexCoord) -> Self {
+    pub fn new(height: u8) -> Self {
         let mut possibilities = HashSet::new();
 
         // Au sol, toutes les tuiles sauf Empty et Leaves
-        if coord.height == 0 {
+        if height == 0 {
             for tile in TileType::ground_tiles() {
                 possibilities.insert(*tile);
             }
@@ -28,7 +67,6 @@ impl WfcCell {
         }
 
         Self {
-            coord,
             possibilities,
             collapsed: false,
         }

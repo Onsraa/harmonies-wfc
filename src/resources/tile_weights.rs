@@ -1,6 +1,6 @@
+use crate::components::grid::tile::tile_type::TileType;
 use bevy::prelude::*;
 use std::collections::HashMap;
-use crate::components::tile::TileType;
 
 /// Resource pour stocker les poids de chaque type de tuile
 #[derive(Resource)]
@@ -17,7 +17,7 @@ impl Default for TileWeights {
 
         // Poids par défaut pour le niveau 0 (sol)
         weights.insert((TileType::City, 0), 15.0);
-        weights.insert((TileType::River, 0), 10.0);  // Augmenté pour plus de rivières
+        weights.insert((TileType::River, 0), 10.0); // Augmenté pour plus de rivières
         weights.insert((TileType::Rock, 0), 20.0);
         weights.insert((TileType::Trunk, 0), 20.0);
         weights.insert((TileType::Field, 0), 35.0);
@@ -61,14 +61,24 @@ impl TileWeights {
     /// Normalise les poids pour un niveau donné (somme = 100)
     pub fn normalize_weights(&mut self, height: u8) {
         let tiles = match height {
-            0 => vec![TileType::City, TileType::River, TileType::Rock, TileType::Trunk, TileType::Field],
-            1 | 2 => vec![TileType::City, TileType::Rock, TileType::Trunk, TileType::Leaves, TileType::Empty],
+            0 => vec![
+                TileType::City,
+                TileType::River,
+                TileType::Rock,
+                TileType::Trunk,
+                TileType::Field,
+            ],
+            1 | 2 => vec![
+                TileType::City,
+                TileType::Rock,
+                TileType::Trunk,
+                TileType::Leaves,
+                TileType::Empty,
+            ],
             _ => return,
         };
 
-        let sum: f32 = tiles.iter()
-            .map(|t| self.get_weight(*t, height))
-            .sum();
+        let sum: f32 = tiles.iter().map(|t| self.get_weight(*t, height)).sum();
 
         if sum > 0.0 {
             for tile in tiles {
@@ -95,7 +105,9 @@ impl TileWeights {
 
         if total_weight <= 0.0 {
             // Si tous les poids sont zéro, choix uniforme
-            return possibilities.get(rand::random::<i64>() as usize % possibilities.len()).copied();
+            return possibilities
+                .get(rand::random::<i64>() as usize % possibilities.len())
+                .copied();
         }
 
         // Choix aléatoire pondéré

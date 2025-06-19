@@ -1,21 +1,17 @@
-use crate::components::tile::TileType;
+use crate::components::grid::tile::tile_type::TileType;
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::wfc::GenerateWorldEvent;
 use bevy::prelude::*;
-use bevy_egui::{EguiContexts, egui};
+use bevy_egui::{egui, EguiContexts};
 use egui::SliderClamping;
 
 /// Condition pour vérifier si l'UI doit être mise à jour
-pub fn should_update_ui(
-    tile_weights: Res<TileWeights>,
-) -> bool {
+pub fn should_update_ui(tile_weights: Res<TileWeights>) -> bool {
     tile_weights.show_ui
 }
 
 /// Condition pour vérifier si l'aide doit être affichée
-pub fn should_show_help(
-    keyboard: Res<ButtonInput<KeyCode>>,
-) -> bool {
+pub fn should_show_help(keyboard: Res<ButtonInput<KeyCode>>) -> bool {
     keyboard.pressed(KeyCode::KeyP)
 }
 

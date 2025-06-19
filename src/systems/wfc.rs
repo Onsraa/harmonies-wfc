@@ -1,6 +1,10 @@
-use crate::components::tile::{Tile, TileType};
-use crate::resources::grid::HexGrid;
+use crate::components::grid::hex::Hex;
+use crate::components::grid::tile::tile_type::TileType;
+use crate::components::grid::tile::{Tile, TileStack};
+use crate::components::hex_coord::HexCoord;
+use crate::resources::grid::{GridLayout, TileGrid};
 use crate::resources::tile_weights::TileWeights;
+use crate::wfc::cell::CellCoord;
 use crate::wfc::solver::WfcSolver;
 use bevy::prelude::*;
 
@@ -11,50 +15,52 @@ pub struct GenerateWorldEvent;
 /// Système principal de génération WFC
 pub fn wfc_generation_system(
     mut commands: Commands,
-    mut grid: ResMut<HexGrid>,
     mut solver: ResMut<WfcSolver>,
-    tile_weights: Res<TileWeights>,
+    mut grid: ResMut<TileGrid>,
+    mut grid_layout: ResMut<GridLayout>,
     mut events: EventReader<GenerateWorldEvent>,
     tile_query: Query<Entity, With<Tile>>,
+    mut hexes_query: Query<(&Hex, &mut TileStack)>,
 ) {
     for _event in events.read() {
         info!("Démarrage de la génération WFC avec pondération...");
 
-        // Supprime les anciennes tuiles
         for entity in tile_query.iter() {
             commands.entity(entity).despawn();
         }
-
-        // Vide la grille
         grid.clear();
 
-        // Réinitialise le solveur
-        *solver = WfcSolver::new(grid.width, grid.height);
-
-        // Lance la résolution avec pondération
-        //match solver.solve_weighted(&tile_weights) {
+        *solver = WfcSolver::new(
+            grid_layout.width * 2,
+            grid_layout.length * 2,
+            grid_layout.max_height,
+        );
         match solver.solve() {
             Ok(()) => {
                 info!("Génération WFC réussie!");
-
-                // Transfère les tuiles du solveur vers la grille
                 for (coord, cell) in &solver.cells {
                     if let Some(tile_type) = cell.get_tile_type() {
                         if tile_type != TileType::Empty {
-                            grid.set_tile(*coord, tile_type);
-
-                            // Crée l'entité Bevy pour la tuile
-                            commands.spawn(Tile {
-                                coord: *coord,
-                                tile_type,
-                            });
+                            grid.set_tile(coord.clone(), tile_type);
                         }
                     }
                 }
-
+                for (hex, mut tile_stack) in hexes_query.iter_mut() {
+                    tile_stack.tiles.clear();
+                    for height in 0..=grid_layout.max_height {
+                        let coord = CellCoord(hex.q(), hex.r(), height);
+                        if let Some(tile_type) = grid.get_tile(&coord) {
+                            let tile_entity = commands
+                                .spawn(Tile {
+                                    tile_type: *tile_type,
+                                })
+                                .id();
+                            tile_stack.tiles.push(tile_entity);
+                        }
+                    }
+                }
                 info!("Nombre de tuiles générées: {}", grid.tiles.len());
 
-                // Affiche les statistiques des rivières
                 let river_count = grid.count_tiles_of_type(TileType::River);
                 info!("Rivières générées: {} segments", river_count);
             }
@@ -68,7 +74,7 @@ pub fn wfc_generation_system(
 /// Système pour afficher les statistiques de génération (touche F1)
 pub fn wfc_debug_system(
     solver: Res<WfcSolver>,
-    grid: Res<HexGrid>,
+    grid: Res<TileGrid>,
     keyboard: Res<ButtonInput<KeyCode>>,
 ) {
     if keyboard.just_pressed(KeyCode::F1) {

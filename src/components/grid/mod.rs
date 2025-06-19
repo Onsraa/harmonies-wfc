@@ -1,4 +1,5 @@
 ﻿pub mod hex;
+pub mod tile;
 
 use hex::*;
 
