@@ -3,6 +3,7 @@ use crate::components::grid::tile::tile_type::TileType;
 use crate::resources::river::RiverConstraints;
 use crate::resources::tile_weights::TileWeights;
 use bevy::prelude::*;
+
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[derive(Resource)]
@@ -170,7 +171,7 @@ impl WfcSolver {
             let mut new_possibilities = HashSet::new();
 
             for tile_type in &cell.possibilities {
-                if tile_type.can_be_placed_on(&below_type) || *tile_type == TileType::Empty {
+                if tile_type.can_be_placed_on(&below_type) {
                     new_possibilities.insert(*tile_type);
                 }
             }
