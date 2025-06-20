@@ -59,6 +59,10 @@ pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
                     ..default()
                 },
                 TextColor(Color::WHITE),
+                Node {
+                    margin: UiRect::new(Val::Px(0.0), Val::Px(0.0), Val::Px(0.0), Val::Px(100.0)),
+                    ..default()
+                }
             ));
 
             // Play Button
