@@ -149,15 +149,14 @@ impl WfcSolver {
             }
 
             // Propage verticalement
-            if let Some(above_coord) = current_coord.above() {
-                if let Some(above_cell) = self.cells.get(&above_coord).cloned() {
-                    if !above_cell.collapsed {
-                        self.update_vertical_possibilities(above_coord.clone(), current_type);
+            let above_coord = current_coord.above();
+            if let Some(above_cell) = self.cells.get(&above_coord).cloned() {
+                if !above_cell.collapsed {
+                    self.update_vertical_possibilities(above_coord.clone(), current_type);
 
-                        let cell = self.cells.get(&above_coord).unwrap();
-                        if !cell.possibilities.is_empty() && !stack.contains(&above_coord) {
-                            stack.push_back(above_coord);
-                        }
+                    let cell = self.cells.get(&above_coord).unwrap();
+                    if !cell.possibilities.is_empty() && !stack.contains(&above_coord) {
+                        stack.push_back(above_coord);
                     }
                 }
             }

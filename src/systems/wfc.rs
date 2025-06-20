@@ -1,7 +1,6 @@
 use crate::components::grid::hex::Hex;
 use crate::components::grid::tile::tile_type::TileType;
 use crate::components::grid::tile::{Tile, TileStack};
-use crate::components::hex_coord::HexCoord;
 use crate::resources::grid::{GridLayout, TileGrid};
 use crate::resources::tile_weights::TileWeights;
 use crate::wfc::cell::CellCoord;
@@ -49,9 +48,11 @@ pub fn wfc_generation_system(
                     for height in 0..=grid_layout.max_height {
                         let coord = CellCoord(hex.q(), hex.r(), height);
                         if let Some(tile_type) = grid.get_tile(&coord) {
+                            let top_level = grid.get_tile(&coord.above()).is_none();
                             let tile_entity = commands
                                 .spawn(Tile {
                                     tile_type: *tile_type,
+                                    top_level,
                                 })
                                 .id();
                             tile_stack.tiles.push(tile_entity);
