@@ -5,6 +5,7 @@ use crate::systems::wfc::GenerateWorldEvent;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use egui::SliderClamping;
+use crate::systems::menu::GameState;
 
 /// Condition pour vérifier si l'UI doit être mise à jour
 pub fn should_update_ui(tile_weights: Res<TileWeights>) -> bool {
@@ -22,7 +23,13 @@ pub fn tile_weights_ui_system(
     mut tile_weights: ResMut<TileWeights>,
     mut events: EventWriter<GenerateWorldEvent>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    state: Res<State<GameState>>
 ) {
+    match state.get() {
+        GameState::InGame => {},
+        _ => return
+    }
+    
     // Toggle UI avec Tab
     if keyboard.just_pressed(KeyCode::Tab) {
         tile_weights.show_ui = !tile_weights.show_ui;
@@ -136,7 +143,13 @@ pub fn tile_weights_ui_system(
 }
 
 /// Système pour afficher les contrôles
-pub fn controls_help_ui_system(mut contexts: EguiContexts, keyboard: Res<ButtonInput<KeyCode>>) {
+pub fn controls_help_ui_system(mut contexts: EguiContexts, keyboard: Res<ButtonInput<KeyCode>>, state: Res<State<GameState>>) {
+
+    match state.get() {
+        GameState::InGame => {},
+        _ => return
+    }
+    
     if !keyboard.pressed(KeyCode::KeyP) {
         return;
     }
