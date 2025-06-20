@@ -55,7 +55,23 @@ impl WfcSolver {
         Ok(())
     }
 
-    /// Trouve la cellule non effondrée avec l'entropie minimale
+    pub fn solve_weighted(&mut self, tile_weights: &TileWeights) -> Result<(), String> {
+        loop {
+            match self.find_min_entropy_cell() {
+                Some(coord) => {
+                    self.collapse_cell_weighted(&coord, tile_weights)?;
+                    self.propagate(&coord)?;
+                }
+                None => {
+                    self.is_complete = true;
+                    break;
+                }
+            }
+        }
+
+        Ok(())
+    }
+
     fn find_min_entropy_cell(&self) -> Option<CellCoord> {
         self.cells
             .iter()
@@ -272,30 +288,6 @@ impl WfcSolver {
             self.river_constraints
                 .river_positions
                 .insert((coord.0, coord.1));
-        }
-
-        Ok(())
-    }
-
-    /// Lance la résolution avec pondération
-    pub fn solve_weighted(&mut self, tile_weights: &TileWeights) -> Result<(), String> {
-        // Boucle principale
-        loop {
-            // Trouve la cellule avec l'entropie minimale
-            match self.find_min_entropy_cell() {
-                Some(coord) => {
-                    // Utilise la nouvelle méthode avec poids
-                    self.collapse_cell_weighted(&coord, tile_weights)?;
-
-                    // Propage les contraintes
-                    self.propagate(&coord)?;
-                }
-                None => {
-                    // Plus de cellules à effondrer
-                    self.is_complete = true;
-                    break;
-                }
-            }
         }
 
         Ok(())

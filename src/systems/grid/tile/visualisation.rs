@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use bevy::render::render_resource::TextureViewDimension::Cube;
 use bevy::scene::Scene;
 use egui::ahash::{HashMap, HashMapExt};
+use rand::Rng;
 
 /// Marqueur pour les entités visuelles des tuiles
 #[derive(Component)]
@@ -32,7 +33,7 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
     );
     meshes.insert(
         (TileType::City, 2),
-        asset_server.load("tiles/city/tile_city_3.gltf#Scene0"),
+        asset_server.load("tiles/city/tile_city_2.gltf#Scene0"),
     );
 
     // Rock
@@ -70,7 +71,6 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
     commands.insert_resource(SharedMeshes { meshes });
 }
 
-/// Système de rendu des tuiles optimisé - ne recrée que ce qui est nécessaire
 pub fn render_tiles_system(
     mut commands: Commands,
     shared_meshes: Res<SharedMeshes>,
@@ -79,6 +79,7 @@ pub fn render_tiles_system(
     mut events: EventReader<crate::systems::wfc::GenerateWorldEvent>,
     visual_query: Query<Entity, With<TileVisual>>,
 ) {
+    let rng = &mut rand::rng();
     // Ne supprime les visuels QUE lors d'une régénération
     if !events.is_empty() {
         for entity in visual_query.iter() {
@@ -97,7 +98,7 @@ pub fn render_tiles_system(
                 if tile.top_level {
                     0
                 } else {
-                    1
+                    rng.random_range(1..=2)
                 }
             }
             _ => 0,
