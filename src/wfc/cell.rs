@@ -23,21 +23,13 @@ impl CellCoord {
     }
 
     #[inline]
-    pub fn above(&self) -> Option<CellCoord> {
-        if self.2 < 2 {
-            Some(CellCoord(self.0, self.1, self.2 + 1))
-        } else {
-            None
-        }
+    pub fn above(&self) -> CellCoord {
+        CellCoord(self.0, self.1, self.2 + 1)
     }
 
     #[inline]
-    pub fn below(&self) -> Option<CellCoord> {
-        if self.2 > 0 {
-            Some(CellCoord(self.0, self.1, self.2 - 1))
-        } else {
-            None
-        }
+    pub fn below(&self) -> CellCoord {
+        CellCoord(self.0, self.1, self.2 - 1)
     }
 }
 
