@@ -1,5 +1,5 @@
 // Taille par défaut de la grille hexagonale
-pub const DEFAULT_GRID_SIZE: i32 = 100;
+pub const DEFAULT_GRID_SIZE: i32 = 20;
 
 // Hauteur maximale des tuiles (3 niveaux : 0, 1, 2)
 pub const MAX_HEIGHT: u8 = 3;
