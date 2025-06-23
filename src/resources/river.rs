@@ -1,4 +1,4 @@
-﻿use crate::wfc::cell::CellCoord;
+﻿use crate::wfc::v1::cell::CellCoord;
 use bevy::prelude::Resource;
 use std::collections::HashSet;
 

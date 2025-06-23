@@ -7,34 +7,29 @@ use bevy::prelude::Component;
 #[derive(Component, PartialEq, Eq, Hash, Clone, Copy, Debug)]
 pub struct Hex {
     pub coords: [i32; 3],
+    pub level: i32,
 }
-
-const HEX_DIRECTIONS: [Hex; 6] = [
-    /// Hexagonal directions, in trigonometric order (starting from East)
-    Hex { coords: [1, 0, -1] }, // 0 : E
-    Hex { coords: [1, -1, 0] }, // 1 : NE
-    Hex { coords: [0, -1, 1] }, // 2 : NW
-    Hex { coords: [-1, 0, 1] }, // 3 : W
-    Hex { coords: [-1, 1, 0] }, // 4 : SW
-    Hex { coords: [0, 1, -1] }, // 5 : SE
-];
 
 impl Hex {
     // --- CONSTRUCTORS ---
     #[inline]
-    pub fn new(q: i32, r: i32, s: i32) -> Self {
+    pub fn new(q: i32, r: i32, s: i32, level: i32) -> Self {
         debug_assert_eq!(
             q + r + s,
             0,
             "Invalid hex coordinates: q + r + s must equal 0"
         );
-        Self { coords: [q, r, s] }
+        Self {
+            coords: [q, r, s],
+            level,
+        }
     }
 
     #[inline]
-    pub fn from_axial(q: i32, r: i32) -> Self {
+    pub fn from_axial(q: i32, r: i32, level: i32) -> Self {
         Self {
             coords: [q, r, -q - r],
+            level,
         }
     }
 
@@ -52,6 +47,11 @@ impl Hex {
     #[inline]
     pub fn s(&self) -> i32 {
         self.coords[2]
+    }
+
+    #[inline]
+    pub fn level(&self) -> i32 {
+        self.level
     }
 
     // --- METHODS ---

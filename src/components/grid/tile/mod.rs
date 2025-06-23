@@ -1,5 +1,5 @@
 ﻿use crate::components::grid::tile::tile_type::TileType;
-use bevy::prelude::{Component, Entity};
+use bevy::prelude::Component;
 
 pub mod tile_type;
 
@@ -7,9 +7,4 @@ pub mod tile_type;
 pub struct Tile {
     pub tile_type: TileType,
     pub top_level: bool,
-}
-
-#[derive(Component)]
-pub struct TileStack {
-    pub tiles: Vec<Entity>,
 }

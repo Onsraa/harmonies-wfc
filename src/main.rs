@@ -16,9 +16,8 @@ use bevy::prelude::*;
 
 fn main() {
     App::new()
-        .add_plugins(MenuPlugin)
-        .add_plugins(MeshPickingPlugin)
         .add_plugins(SetupPlugin)
+        .add_plugins(MenuPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(GridPlugin)
         .add_plugins(WfcPlugin)

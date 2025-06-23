@@ -1,7 +1,7 @@
 ﻿use crate::components::grid::hex::display::{hex_to_pixel, polygon_corners};
 use crate::components::grid::hex::Hex;
-use crate::components::grid::tile::TileStack;
 use crate::resources::grid::GridLayout;
+use crate::wfc::v2::controller::WfcController;
 use bevy::asset::Handle;
 use bevy::ecs::system::SystemState;
 use bevy::pbr::{MeshMaterial3d, StandardMaterial};
@@ -34,19 +34,18 @@ pub fn setup_grid(
         let y_low_offset = if q < 0 { -q } else { 0 };
         let y_high_offset = if q > 0 { -q } else { 0 };
         for r in -grid_layout.length + y_low_offset..=grid_layout.length + y_high_offset {
-            let hex = Hex::from_axial(q, r);
-            let pixel_pos = hex_to_pixel(&grid_layout, hex);
-            hexes.push((
-                hex,
-                Mesh3d(meshes.add(hexagon.clone())),
-                MeshMaterial3d(transparent_material.clone()),
-                Transform::from_translation(Vec3::new(pixel_pos.x, 0.0, pixel_pos.y))
-                    .with_rotation(Quat::from_rotation_x(std::f32::consts::FRAC_PI_2))
-                    .with_scale(Vec3::splat(0.98)),
-                TileStack {
-                    tiles: Vec::with_capacity(grid_layout.max_height as usize),
-                },
-            ))
+            for level in 0..grid_layout.max_height {
+                let hex = Hex::from_axial(q, r, level as i32);
+                let pixel_pos = hex_to_pixel(&grid_layout, hex);
+                hexes.push((
+                    hex,
+                    // Mesh3d(meshes.add(hexagon.clone())),
+                    // MeshMaterial3d(transparent_material.clone()),
+                    Transform::from_translation(Vec3::new(pixel_pos.x, 0.0, pixel_pos.y))
+                        .with_rotation(Quat::from_rotation_x(std::f32::consts::FRAC_PI_2))
+                        .with_scale(Vec3::splat(0.98)),
+                ))
+            }
         }
     }
     let entities: Vec<Entity> = world.spawn_batch(hexes).collect();
@@ -58,6 +57,14 @@ pub fn setup_grid(
                 transparent_material.clone(),
             ));
     }
+    let mut hex_query = world.query::<&Hex>();
+    let hex_vec: Vec<Hex> = hex_query.iter(world).copied().collect();
+    let controller = WfcController::from_hexes(hex_vec);
+    println!(
+        "WFC Controller initialized with {} hexes",
+        controller.grid.cells.len()
+    );
+    world.insert_resource(controller);
 }
 
 fn update_material_on<E>(
@@ -71,7 +78,7 @@ fn update_material_on<E>(
 }
 
 pub fn create_hex_polygon_from_layout(layout: &GridLayout) -> ConvexPolygon<6> {
-    let unit_hex = Hex::new(0, 0, 0);
+    let unit_hex = Hex::new(0, 0, 0, 0);
     let corners = polygon_corners(layout, unit_hex);
     let polygon = ConvexPolygon::new(corners);
     polygon.unwrap()

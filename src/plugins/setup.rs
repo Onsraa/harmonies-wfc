@@ -23,6 +23,7 @@ impl Plugin for SetupPlugin {
             }),
             LogDiagnosticsPlugin::default(),
             FrameTimeDiagnosticsPlugin::default(),
+            MeshPickingPlugin,
         ));
 
         // Add the state

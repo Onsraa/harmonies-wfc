@@ -1,7 +1,7 @@
 use crate::components::grid::tile::tile_type::TileType;
 use crate::components::grid::Orientation;
 use crate::globals::{DEFAULT_GRID_SIZE, MAX_HEIGHT};
-use crate::wfc::cell::CellCoord;
+use crate::wfc::v1::cell::CellCoord;
 use bevy::math::Vec2;
 use bevy::prelude::Resource;
 use std::collections::HashMap;
