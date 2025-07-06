@@ -3,7 +3,7 @@ use crate::globals::{TILE_GAP, TILE_HEIGHT};
 use crate::systems::wfc::v1::GenerateWorldEvent;
 use crate::wfc::v2::cell::TileId;
 use crate::wfc::v2::controller::WfcController;
-use crate::wfc::v2::{CITY, CITY_TOP, FIELD, RIVER, ROCK, ROCK_TOP, TRUNK};
+use crate::wfc::v2::{CITY, CITY_TOP, FIELD, LEAVES, RIVER, ROCK, ROCK_TOP, TRUNK};
 use bevy::prelude::*;
 use bevy::scene::Scene;
 use std::collections::HashMap;
@@ -59,6 +59,10 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
     meshes.insert(
         TRUNK,
         asset_server.load("tiles/tronc/tile_tronc.gltf#Scene0"),
+    );
+    meshes.insert(
+        LEAVES,
+        asset_server.load("tiles/tronc/tile_leaves.gltf#Scene0"),
     );
 
     // Field

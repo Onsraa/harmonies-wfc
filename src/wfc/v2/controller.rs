@@ -64,9 +64,7 @@ impl WfcController {
                         neighbor_index
                     );
                     return Err(WfcError::NoValidTiles);
-                }
-
-                if self
+                } else if self
                     .solver
                     .propagate_to_cell(&mut self.grid.cells[neighbor_index], compatible_tiles)
                 {

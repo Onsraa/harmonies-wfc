@@ -23,10 +23,10 @@ impl WfcSolver {
         direction: Direction,
     ) -> TilePossibilities {
         let mut allowed_tiles = 0;
-        for tile_id in 0..self.tile_count {
+        for tile_id in 0..=self.tile_count {
             if cell.is_possible(tile_id) {
                 allowed_tiles |= self.adjacency[idx(tile_id, direction)];
-            }
+            } 
         }
 
         allowed_tiles

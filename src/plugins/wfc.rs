@@ -1,3 +1,4 @@
+use bevy::input::common_conditions::input_just_pressed;
 use crate::systems::wfc::v1::GenerateWorldEvent;
 use crate::systems::wfc::v2::wfc::step_controller;
 use bevy::prelude::*;
