@@ -15,18 +15,18 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"toche_3",
-			"scale":[
-				1.1995763778686523,
-				1.1995763778686523,
-				1.1995763778686523
+			"name":"ville_1",
+			"translation":[
+				0,
+				0.7999999523162842,
+				0
 			]
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"roche_1.001",
+			"name":"Material.018",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -38,7 +38,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube.026",
+			"name":"Cube.010",
 			"primitives":[
 				{
 					"attributes":{
@@ -61,69 +61,69 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"roche_1 Base Color",
-			"uri":"roche_1%20Base%20Color.png"
+			"name":"Material",
+			"uri":"Material.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1093,
+			"count":1578,
 			"max":[
-				0.9219339489936829,
+				0.8900338411331177,
 				0.5024775266647339,
-				0.9462370276451111
+				1.0340062379837036
 			],
 			"min":[
-				-1.108212947845459,
-				-0.5768474340438843,
-				-0.9583057165145874
+				-0.8834384083747864,
+				-0.5063766837120056,
+				-0.989330530166626
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1093,
+			"count":1578,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1093,
+			"count":1578,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":2304,
+			"count":3216,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":13116,
+			"byteLength":18936,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":13116,
-			"byteOffset":13116,
+			"byteLength":18936,
+			"byteOffset":18936,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":8744,
-			"byteOffset":26232,
+			"byteLength":12624,
+			"byteOffset":37872,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4608,
-			"byteOffset":34976,
+			"byteLength":6432,
+			"byteOffset":50496,
 			"target":34963
 		}
 	],
@@ -135,8 +135,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":39584,
-			"uri":"tile_rock_3.bin"
+			"byteLength":56928,
+			"uri":"tile_ville.bin"
 		}
 	]
 }
