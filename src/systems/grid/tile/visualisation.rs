@@ -1,5 +1,6 @@
 use crate::components::grid::hex::Hex;
-use crate::globals::{TILE_GAP, TILE_HEIGHT};
+use crate::components::boid::Obstacle;
+use crate::globals::{TILE_GAP, TILE_HEIGHT, HEX_SIZE};
 use crate::systems::wfc::v2::wfc::WfcSharedState;
 use crate::wfc::v2::cell::TileId;
 use crate::wfc::v2::{CITY, CITY_TOP, FIELD, LEAVES, RIVER, ROCK, ROCK_TOP, TRUNK};
@@ -35,10 +36,6 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
         CITY_TOP,
         asset_server.load("tiles/city/tile_city_2.gltf#Scene0"),
     );
-    // meshes.insert(
-    //     (TileType::City, 2),
-    //     asset_server.load("tiles/city/tile_city_2.gltf#Scene0"),
-    // );
 
     // Rock
     meshes.insert(
@@ -49,10 +46,6 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
         ROCK,
         asset_server.load("tiles/rock/tile_rock_2.gltf#Scene0"),
     );
-    // meshes.insert(
-    //     (TileType::Rock, 2),
-    //     asset_server.load("tiles/rock/tile_rock_3.gltf#Scene0"),
-    // );
 
     // River
     meshes.insert(
@@ -129,7 +122,8 @@ pub fn render_new_tiles(
                                 TILE_HEIGHT / 2.0 + hex.level as f32 * (TILE_HEIGHT + TILE_GAP),
                                 transform.translation.z,
                             )
-                            .with_scale(Vec3::splat(2.0)),
+                                .with_scale(Vec3::splat(2.0)),
+                            Obstacle { radius: HEX_SIZE }, 
                         ));
                     }
                 }

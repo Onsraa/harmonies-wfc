@@ -1,9 +1,10 @@
 use crate::components::grid::tile::tile_type::TileType;
 use crate::globals::MAX_HEIGHT;
+use crate::resources::boids::{BoidSettings, GroupsTargets};
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::menu::GameState;
 use bevy::prelude::*;
-use bevy_egui::{egui, EguiContexts};
+use bevy_egui::{EguiContexts, egui};
 use egui::SliderClamping;
 
 /// Condition pour vérifier si l'UI doit être mise à jour
@@ -20,8 +21,10 @@ pub fn should_show_help(keyboard: Res<ButtonInput<KeyCode>>) -> bool {
 pub fn tile_weights_ui_system(
     mut contexts: EguiContexts,
     mut tile_weights: ResMut<TileWeights>,
+    mut boid_settings: ResMut<BoidSettings>,
     keyboard: Res<ButtonInput<KeyCode>>,
     state: Res<State<GameState>>,
+    mut commands: Commands,
 ) {
     match state.get() {
         GameState::InGame => {}
@@ -167,6 +170,55 @@ pub fn tile_weights_ui_system(
                 ui.label("• Réduisez le poids 'Vide' pour des constructions plus denses");
                 ui.label("• Les poids sont relatifs : seul le rapport entre eux compte");
             });
+        });
+
+    // Fenêtre pour les paramètres boids
+    egui::Window::new("Paramètres Boids")
+        .default_pos([420.0, 10.0])
+        .show(contexts.ctx_mut(), |ui| {
+            ui.heading("Forces");
+
+            ui.add(egui::Slider::new(&mut boid_settings.cohesion_coeff, 0.0..=50.0)
+                .text("Cohésion"));
+            ui.add(egui::Slider::new(&mut boid_settings.alignment_coeff, 0.0..=20.0)
+                .text("Alignement"));
+            ui.add(egui::Slider::new(&mut boid_settings.separation_coeff, 0.0..=50.0)
+                .text("Séparation"));
+            ui.add(egui::Slider::new(&mut boid_settings.collision_coeff, 0.0..=100.0)
+                .text("Évitement tuiles"));
+            ui.add(egui::Slider::new(&mut boid_settings.attraction_coeff, 0.0..=10.0)
+                .text("Attraction cible"));
+
+            ui.separator();
+            ui.heading("Distances");
+
+            ui.add(egui::Slider::new(&mut boid_settings.cohesion_range, 1.0..=100.0)
+                .text("Portée cohésion"));
+            ui.add(egui::Slider::new(&mut boid_settings.alignment_range, 1.0..=80.0)
+                .text("Portée alignement"));
+            ui.add(egui::Slider::new(&mut boid_settings.separation_range, 1.0..=50.0)
+                .text("Portée séparation"));
+            ui.add(egui::Slider::new(&mut boid_settings.tile_avoidance_range, 1.0..=30.0)
+                .text("Distance évitement tuiles"));
+
+            ui.separator();
+            ui.heading("Groupes");
+
+            let old_group_count = boid_settings.group_count;
+            ui.add(egui::Slider::new(&mut boid_settings.group_count, 1..=10)
+                .text("Nombre de groupes"));
+
+            // Si le nombre de groupes a changé, mettre à jour les cibles
+            if boid_settings.group_count != old_group_count {
+                commands.insert_resource(GroupsTargets::new(boid_settings.group_count));
+            }
+
+            ui.separator();
+            ui.heading("Autres");
+
+            ui.add(egui::Slider::new(&mut boid_settings.field_of_view, 45.0..=180.0)
+                .text("Champ de vision (°)"));
+            ui.checkbox(&mut boid_settings.bounce_against_walls, "Rebondir sur les murs");
         });
 }
 

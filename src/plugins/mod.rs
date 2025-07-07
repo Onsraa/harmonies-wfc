@@ -5,3 +5,5 @@ pub mod ui;
 pub mod visualisation;
 pub mod wfc;
 pub mod menu;
+pub mod boids;
+pub mod spatial;
