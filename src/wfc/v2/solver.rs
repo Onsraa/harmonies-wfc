@@ -1,7 +1,7 @@
 ﻿use crate::wfc::v2::cell::{TileId, TilePossibilities, WfcCell};
 use crate::wfc::v2::{
-    Direction, CITY, CITY_TOP, DOWN, EAST, EMPTY, FIELD, LEAVES, NORTHEAST, NORTHWEST, RIVER, ROCK,
-    ROCK_TOP, SOUTHEAST, SOUTHWEST, TILE_COUNT, TRUNK, UP, WEST,
+    Direction, CITY, CITY_TOP, DOWN, EMPTY, FIELD, LEAVES, RIVER, ROCK, ROCK_TOP, TILE_COUNT,
+    TRUNK, UP,
 };
 
 pub(crate) struct WfcSolver {
@@ -69,39 +69,51 @@ impl WfcSolver {
         // RIVER
         adjacency[idx(RIVER, UP)] = 1 << EMPTY;
         adjacency[idx(RIVER, DOWN)] = 0;
-        adjacency[idx(RIVER, EAST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
-        adjacency[idx(RIVER, WEST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
-        adjacency[idx(RIVER, NORTHEAST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
-        adjacency[idx(RIVER, NORTHWEST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
-        adjacency[idx(RIVER, SOUTHWEST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
-        adjacency[idx(RIVER, SOUTHEAST)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
+        for dir in 0..6 {
+            adjacency[idx(RIVER, dir)] = (1 << FIELD) | (1 << RIVER) | (1 << ROCK_TOP);
+            adjacency[idx(RIVER, dir)] &=
+                !(1 << CITY) | !(1 << CITY_TOP) | !(1 << TRUNK) | !(1 << LEAVES);
+        }
 
         // FIELD
         adjacency[idx(FIELD, UP)] = 1 << EMPTY;
         adjacency[idx(FIELD, DOWN)] = 0;
+        for dir in 0..6 {
+            break;
+        }
 
         // TRUNK
         adjacency[idx(TRUNK, UP)] = (1 << TRUNK) | (1 << LEAVES) | (1 << CITY);
         adjacency[idx(TRUNK, DOWN)] = 1 << TRUNK;
-        adjacency[idx(TRUNK, EAST)] &= !(1 << RIVER);
+        for dir in 0..6 {
+            adjacency[idx(TRUNK, dir)] &= !(1 << RIVER);
+        }
         // LEAVES
         adjacency[idx(LEAVES, UP)] = 1 << EMPTY;
         adjacency[idx(LEAVES, DOWN)] = 1 << TRUNK;
-        adjacency[idx(LEAVES, EAST)] &= !(1 << RIVER);
+        for dir in 0..6 {
+            adjacency[idx(LEAVES, dir)] &= !(1 << RIVER);
+        }
 
         // CITY
         adjacency[idx(CITY, UP)] = (1 << CITY) | (1 << CITY_TOP);
         adjacency[idx(CITY, DOWN)] = (1 << CITY) | (1 << TRUNK) | (1 << ROCK);
-        adjacency[idx(CITY, EAST)] &= !(1 << RIVER);
+        for dir in 0..6 {
+            adjacency[idx(CITY, dir)] &= !(1 << ROCK);
+        }
         // CITY TOP
         adjacency[idx(CITY_TOP, UP)] = 1 << EMPTY;
         adjacency[idx(CITY_TOP, DOWN)] = 1 << CITY;
-        adjacency[idx(CITY_TOP, EAST)] &= !(1 << RIVER);
+        for dir in 0..6 {
+            adjacency[idx(CITY_TOP, dir)] &= !(1 << ROCK);
+        }
 
         // ROCK
         adjacency[idx(ROCK, UP)] = (1 << ROCK) | (1 << ROCK_TOP) | (1 << CITY);
         adjacency[idx(ROCK, DOWN)] = 1 << ROCK;
-        adjacency[idx(ROCK, EAST)] &= !(1 << RIVER);
+        for dir in 0..6 {
+            adjacency[idx(ROCK, dir)] &= !(1 << CITY) | !(1 << CITY_TOP) | !(1 << RIVER);
+        }
         // ROCK TOP
         adjacency[idx(ROCK_TOP, UP)] = 1 << EMPTY;
         adjacency[idx(ROCK_TOP, DOWN)] = 1 << ROCK;

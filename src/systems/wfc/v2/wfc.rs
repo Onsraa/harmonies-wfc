@@ -75,13 +75,12 @@ pub fn setup_wfc_task_when_ready(
         let mut controller = WfcController::from_hexes(hex_vec);
         let mut steps = 0;
         let start_time = std::time::Instant::now();
+        const UPDATE_EVERY_N_STEPS: usize = 10;
 
         loop {
             match controller.step() {
                 Ok(_) => {
                     steps += 1;
-
-                    const UPDATE_EVERY_N_STEPS: usize = 1000;
 
                     if steps % UPDATE_EVERY_N_STEPS == 0 {
                         if let Ok(mut grid_guard) = shared_grid_clone.try_lock() {
