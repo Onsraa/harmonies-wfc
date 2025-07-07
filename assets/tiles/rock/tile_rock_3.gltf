@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.70",
+		"generator":"Khronos glTF Blender I/O v4.3.47",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -15,12 +15,16 @@
 	"nodes":[
 		{
 			"mesh":0,
+<<<<<<< HEAD
 			"name":"toche_3",
 			"scale":[
 				1.1995763778686523,
 				1.1995763778686523,
 				1.1995763778686523
 			]
+=======
+			"name":"toche_3"
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 		}
 	],
 	"materials":[
@@ -69,7 +73,11 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":1093,
+=======
+			"count":1139,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"max":[
 				0.9219339489936829,
 				0.5024775266647339,
@@ -85,13 +93,21 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":1093,
+=======
+			"count":1139,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":1093,
+=======
+			"count":1139,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"type":"VEC2"
 		},
 		{
@@ -104,26 +120,44 @@
 	"bufferViews":[
 		{
 			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":13116,
+=======
+			"byteLength":13668,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":13116,
 			"byteOffset":13116,
+=======
+			"byteLength":13668,
+			"byteOffset":13668,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"target":34962
 		},
 		{
 			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":8744,
 			"byteOffset":26232,
+=======
+			"byteLength":9112,
+			"byteOffset":27336,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":4608,
+<<<<<<< HEAD
 			"byteOffset":34976,
+=======
+			"byteOffset":36448,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"target":34963
 		}
 	],
@@ -135,7 +169,11 @@
 	],
 	"buffers":[
 		{
+<<<<<<< HEAD
 			"byteLength":39584,
+=======
+			"byteLength":41056,
+>>>>>>> 96cba1857c484db3cc5f2345615abb1b7805dd5d
 			"uri":"tile_rock_3.bin"
 		}
 	]

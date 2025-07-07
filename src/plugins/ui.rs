@@ -1,4 +1,4 @@
-use crate::resources::tile_weights::TileWeights;
+use crate::systems::menu::GameState;
 use crate::systems::ui::{controls_help_ui_system, should_show_help, should_update_ui, tile_weights_ui_system};
 use bevy::prelude::*;
 use bevy_egui::{EguiContextPass, EguiPlugin};

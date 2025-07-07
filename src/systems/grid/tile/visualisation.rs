@@ -1,37 +1,85 @@
 use crate::components::grid::hex::Hex;
 use crate::components::grid::tile::tile_type::TileType;
 use crate::components::grid::tile::{Tile, TileStack};
-use crate::components::hex_coord::HexCoord;
 use crate::globals::{TILE_GAP, TILE_HEIGHT};
+use bevy::gltf::GltfMesh;
 use bevy::prelude::*;
-use egui::ahash::HashMap;
+use bevy::render::render_resource::TextureViewDimension::Cube;
+use bevy::scene::Scene;
+use egui::ahash::{HashMap, HashMapExt};
+use rand::Rng;
 
 /// Marqueur pour les entités visuelles des tuiles
 #[derive(Component)]
 pub struct TileVisual;
 
-/// Resource pour stocker le mesh partagé
+/// Resource pour stocker les scènes partagées
 #[derive(Resource)]
 pub struct SharedMeshes {
-    pub cylinder: Handle<Mesh>,
+    pub meshes: HashMap<(TileType, u8), Handle<Scene>>,
 }
 
-/// Système d'initialisation des meshes partagés
-pub fn setup_shared_meshes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
-    let cylinder = meshes.add(Cylinder::new(1., TILE_HEIGHT));
-    commands.insert_resource(SharedMeshes { cylinder });
+pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let mut meshes = HashMap::new();
+
+    // City
+    meshes.insert(
+        (TileType::City, 0),
+        asset_server.load("tiles/city/tiles_ville.gltf#Scene0"),
+    );
+    meshes.insert(
+        (TileType::City, 1),
+        asset_server.load("tiles/city/tile_city_2.gltf#Scene0"),
+    );
+    meshes.insert(
+        (TileType::City, 2),
+        asset_server.load("tiles/city/tile_city_2.gltf#Scene0"),
+    );
+
+    // Rock
+    meshes.insert(
+        (TileType::Rock, 0),
+        asset_server.load("tiles/rock/tile_rock.gltf#Scene0"),
+    );
+    meshes.insert(
+        (TileType::Rock, 1),
+        asset_server.load("tiles/rock/tile_rock_2.gltf#Scene0"),
+    );
+    meshes.insert(
+        (TileType::Rock, 2),
+        asset_server.load("tiles/rock/tile_rock_3.gltf#Scene0"),
+    );
+
+    // River
+    meshes.insert(
+        (TileType::River, 0),
+        asset_server.load("tiles/water/tile_water.gltf#Scene0"),
+    );
+
+    // Trunk
+    meshes.insert(
+        (TileType::Trunk, 0),
+        asset_server.load("tiles/tronc/tile_tronc.gltf#Scene0"),
+    );
+
+    // Field
+    meshes.insert(
+        (TileType::Field, 0),
+        asset_server.load("tiles/field/tile_champ.gltf#Scene0"),
+    );
+
+    commands.insert_resource(SharedMeshes { meshes });
 }
 
-/// Système de rendu des tuiles optimisé - ne recrée que ce qui est nécessaire
 pub fn render_tiles_system(
     mut commands: Commands,
-    mut materials: ResMut<Assets<StandardMaterial>>,
     shared_meshes: Res<SharedMeshes>,
     new_tiles: Query<(Entity, &Tile), Without<TileVisual>>,
     mut hexes: Query<(&Hex, &Transform, &mut TileStack)>,
     mut events: EventReader<crate::systems::wfc::GenerateWorldEvent>,
     visual_query: Query<Entity, With<TileVisual>>,
 ) {
+    let rng = &mut rand::rng();
     // Ne supprime les visuels QUE lors d'une régénération
     if !events.is_empty() {
         for entity in visual_query.iter() {
@@ -40,41 +88,38 @@ pub fn render_tiles_system(
         events.clear();
     }
 
-    let mut tile_to_material: HashMap<Entity, Handle<StandardMaterial>> = HashMap::default();
+    let mut tile_to_mesh: HashMap<Entity, Handle<Scene>> = HashMap::default();
     for (entity, tile) in new_tiles.iter() {
         if tile.tile_type == TileType::Empty {
             continue;
         }
-        let color = match tile.tile_type {
-            TileType::City => Color::srgb(1.0, 0.0, 0.0),   // Rouge
-            TileType::River => Color::srgb(0.0, 0.5, 1.0),  // Bleu
-            TileType::Rock => Color::srgb(0.5, 0.5, 0.5),   // Gris
-            TileType::Trunk => Color::srgb(0.4, 0.2, 0.0),  // Marron
-            TileType::Leaves => Color::srgb(0.0, 0.8, 0.0), // Vert
-            TileType::Field => Color::srgb(1.0, 1.0, 0.0),  // Jaune
-            TileType::Empty => Color::NONE,
+        let level = match tile.tile_type {
+            TileType::City | TileType::Rock => {
+                if tile.top_level {
+                    0
+                } else {
+                    rng.random_range(1..=2)
+                }
+            }
+            _ => 0,
         };
-
-        let material = materials.add(StandardMaterial {
-            base_color: color,
-            ..default()
-        });
-
-        tile_to_material.insert(entity, material);
+        if let Some(scene) = shared_meshes.meshes.get(&(tile.tile_type, level)) {
+            tile_to_mesh.insert(entity, scene.clone());
+        }
     }
 
     for (hex, transform, tile_stack) in hexes.iter_mut() {
         for (i, tile) in tile_stack.tiles.iter().enumerate() {
-            if let Some(material) = tile_to_material.get(tile) {
+            if let Some(scene_handle) = tile_to_mesh.get(tile) {
                 commands.entity(*tile).insert((
                     TileVisual,
-                    Mesh3d(shared_meshes.cylinder.clone()),
-                    MeshMaterial3d(material.clone()),
+                    SceneRoot(scene_handle.clone()),
                     Transform::from_xyz(
                         transform.translation.x,
                         TILE_HEIGHT / 2.0 + i as f32 * (TILE_HEIGHT + TILE_GAP),
                         transform.translation.z,
-                    ),
+                    )
+                    .with_scale(Vec3::splat(2.0)),
                 ));
             }
         }

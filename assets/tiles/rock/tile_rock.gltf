@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.70",
+		"generator":"Khronos glTF Blender I/O v4.3.47",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -15,7 +15,12 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"rock"
+			"name":"rock",
+			"translation":[
+				0,
+				-0.5,
+				0
+			]
 		}
 	],
 	"materials":[
@@ -64,7 +69,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1207,
+			"count":1225,
 			"max":[
 				0.8147740960121155,
 				1.1260712146759033,
@@ -80,13 +85,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1207,
+			"count":1225,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1207,
+			"count":1225,
 			"type":"VEC2"
 		},
 		{
@@ -99,26 +104,26 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":14484,
+			"byteLength":14700,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":14484,
-			"byteOffset":14484,
+			"byteLength":14700,
+			"byteOffset":14700,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":9656,
-			"byteOffset":28968,
+			"byteLength":9800,
+			"byteOffset":29400,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":3828,
-			"byteOffset":38624,
+			"byteOffset":39200,
 			"target":34963
 		}
 	],
@@ -130,7 +135,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":42452,
+			"byteLength":43028,
 			"uri":"tile_rock.bin"
 		}
 	]

@@ -1,9 +1,11 @@
 use crate::components::grid::tile::tile_type::TileType;
+use crate::globals::MAX_HEIGHT;
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::wfc::GenerateWorldEvent;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use egui::SliderClamping;
+use crate::systems::menu::GameState;
 
 /// Condition pour vérifier si l'UI doit être mise à jour
 pub fn should_update_ui(tile_weights: Res<TileWeights>) -> bool {
@@ -21,7 +23,13 @@ pub fn tile_weights_ui_system(
     mut tile_weights: ResMut<TileWeights>,
     mut events: EventWriter<GenerateWorldEvent>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    state: Res<State<GameState>>
 ) {
+    match state.get() {
+        GameState::InGame => {},
+        _ => return
+    }
+    
     // Toggle UI avec Tab
     if keyboard.just_pressed(KeyCode::Tab) {
         tile_weights.show_ui = !tile_weights.show_ui;
@@ -34,6 +42,7 @@ pub fn tile_weights_ui_system(
     egui::Window::new("Gestion des poids des tuiles")
         .default_pos([10.0, 10.0])
         .default_width(400.0)
+        .scroll(true)
         .show(contexts.ctx_mut(), |ui| {
             ui.heading("Probabilités d'apparition");
 
@@ -42,7 +51,7 @@ pub fn tile_weights_ui_system(
             ui.label("Plus le poids est élevé, plus la tuile apparaîtra souvent.");
 
             // Pour chaque niveau
-            for height in 0..3 {
+            for height in 0..MAX_HEIGHT {
                 ui.separator();
                 ui.heading(format!("Niveau {}", height));
 
@@ -60,51 +69,18 @@ pub fn tile_weights_ui_system(
                 let tiles = match height {
                     0 => vec![
                         (TileType::City, "Ville", egui::Color32::from_rgb(255, 0, 0)),
-                        (
-                            TileType::River,
-                            "Rivière",
-                            egui::Color32::from_rgb(0, 128, 255),
-                        ),
-                        (
-                            TileType::Rock,
-                            "Roche",
-                            egui::Color32::from_rgb(128, 128, 128),
-                        ),
-                        (
-                            TileType::Trunk,
-                            "Tronc",
-                            egui::Color32::from_rgb(102, 51, 0),
-                        ),
-                        (
-                            TileType::Field,
-                            "Champs",
-                            egui::Color32::from_rgb(255, 255, 0),
-                        ),
+                        (TileType::River, "Rivière", egui::Color32::from_rgb(0, 128, 255)),
+                        (TileType::Rock, "Roche", egui::Color32::from_rgb(128, 128, 128)),
+                        (TileType::Trunk, "Tronc", egui::Color32::from_rgb(102, 51, 0)),
+                        (TileType::Field, "Champs", egui::Color32::from_rgb(255, 255, 0)),
                     ],
-                    1 | 2 => vec![
+                    _ => vec![
                         (TileType::City, "Ville", egui::Color32::from_rgb(255, 0, 0)),
-                        (
-                            TileType::Rock,
-                            "Roche",
-                            egui::Color32::from_rgb(128, 128, 128),
-                        ),
-                        (
-                            TileType::Trunk,
-                            "Tronc",
-                            egui::Color32::from_rgb(102, 51, 0),
-                        ),
-                        (
-                            TileType::Leaves,
-                            "Feuilles",
-                            egui::Color32::from_rgb(0, 204, 0),
-                        ),
-                        (
-                            TileType::Empty,
-                            "Vide",
-                            egui::Color32::from_rgb(200, 200, 200),
-                        ),
+                        (TileType::Rock, "Roche", egui::Color32::from_rgb(128, 128, 128)),
+                        (TileType::Trunk, "Tronc", egui::Color32::from_rgb(102, 51, 0)),
+                        (TileType::Leaves, "Feuilles", egui::Color32::from_rgb(0, 204, 0)),
+                        (TileType::Empty, "Vide", egui::Color32::from_rgb(200, 200, 200)),
                     ],
-                    _ => vec![],
                 };
 
                 // Affiche un slider pour chaque tuile
@@ -167,7 +143,13 @@ pub fn tile_weights_ui_system(
 }
 
 /// Système pour afficher les contrôles
-pub fn controls_help_ui_system(mut contexts: EguiContexts, keyboard: Res<ButtonInput<KeyCode>>) {
+pub fn controls_help_ui_system(mut contexts: EguiContexts, keyboard: Res<ButtonInput<KeyCode>>, state: Res<State<GameState>>) {
+
+    match state.get() {
+        GameState::InGame => {},
+        _ => return
+    }
+    
     if !keyboard.pressed(KeyCode::KeyP) {
         return;
     }
