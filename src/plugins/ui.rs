@@ -1,5 +1,6 @@
-use crate::systems::menu::GameState;
-use crate::systems::ui::{controls_help_ui_system, should_show_help, should_update_ui, tile_weights_ui_system};
+use crate::systems::ui::{
+    controls_help_ui_system, should_show_help, should_update_ui, tile_weights_ui_system,
+};
 use bevy::prelude::*;
 use bevy_egui::{EguiContextPass, EguiPlugin};
 
@@ -10,6 +11,12 @@ impl Plugin for UiPlugin {
         app.add_plugins(EguiPlugin {
             enable_multipass_for_primary_context: true,
         });
-        app.add_systems(EguiContextPass, (tile_weights_ui_system.run_if(should_update_ui), controls_help_ui_system.run_if(should_show_help)));
+        app.add_systems(
+            EguiContextPass,
+            (
+                tile_weights_ui_system.run_if(should_update_ui),
+                controls_help_ui_system.run_if(should_show_help),
+            ),
+        );
     }
 }

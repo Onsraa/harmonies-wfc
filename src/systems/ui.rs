@@ -1,11 +1,10 @@
 use crate::components::grid::tile::tile_type::TileType;
 use crate::globals::MAX_HEIGHT;
 use crate::resources::tile_weights::TileWeights;
-use crate::systems::wfc::GenerateWorldEvent;
+use crate::systems::menu::GameState;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use egui::SliderClamping;
-use crate::systems::menu::GameState;
 
 /// Condition pour vérifier si l'UI doit être mise à jour
 pub fn should_update_ui(tile_weights: Res<TileWeights>) -> bool {
@@ -21,15 +20,14 @@ pub fn should_show_help(keyboard: Res<ButtonInput<KeyCode>>) -> bool {
 pub fn tile_weights_ui_system(
     mut contexts: EguiContexts,
     mut tile_weights: ResMut<TileWeights>,
-    mut events: EventWriter<GenerateWorldEvent>,
     keyboard: Res<ButtonInput<KeyCode>>,
-    state: Res<State<GameState>>
+    state: Res<State<GameState>>,
 ) {
     match state.get() {
-        GameState::InGame => {},
-        _ => return
+        GameState::InGame => {}
+        _ => return,
     }
-    
+
     // Toggle UI avec Tab
     if keyboard.just_pressed(KeyCode::Tab) {
         tile_weights.show_ui = !tile_weights.show_ui;
@@ -69,17 +67,49 @@ pub fn tile_weights_ui_system(
                 let tiles = match height {
                     0 => vec![
                         (TileType::City, "Ville", egui::Color32::from_rgb(255, 0, 0)),
-                        (TileType::River, "Rivière", egui::Color32::from_rgb(0, 128, 255)),
-                        (TileType::Rock, "Roche", egui::Color32::from_rgb(128, 128, 128)),
-                        (TileType::Trunk, "Tronc", egui::Color32::from_rgb(102, 51, 0)),
-                        (TileType::Field, "Champs", egui::Color32::from_rgb(255, 255, 0)),
+                        (
+                            TileType::River,
+                            "Rivière",
+                            egui::Color32::from_rgb(0, 128, 255),
+                        ),
+                        (
+                            TileType::Rock,
+                            "Roche",
+                            egui::Color32::from_rgb(128, 128, 128),
+                        ),
+                        (
+                            TileType::Trunk,
+                            "Tronc",
+                            egui::Color32::from_rgb(102, 51, 0),
+                        ),
+                        (
+                            TileType::Field,
+                            "Champs",
+                            egui::Color32::from_rgb(255, 255, 0),
+                        ),
                     ],
                     _ => vec![
                         (TileType::City, "Ville", egui::Color32::from_rgb(255, 0, 0)),
-                        (TileType::Rock, "Roche", egui::Color32::from_rgb(128, 128, 128)),
-                        (TileType::Trunk, "Tronc", egui::Color32::from_rgb(102, 51, 0)),
-                        (TileType::Leaves, "Feuilles", egui::Color32::from_rgb(0, 204, 0)),
-                        (TileType::Empty, "Vide", egui::Color32::from_rgb(200, 200, 200)),
+                        (
+                            TileType::Rock,
+                            "Roche",
+                            egui::Color32::from_rgb(128, 128, 128),
+                        ),
+                        (
+                            TileType::Trunk,
+                            "Tronc",
+                            egui::Color32::from_rgb(102, 51, 0),
+                        ),
+                        (
+                            TileType::Leaves,
+                            "Feuilles",
+                            egui::Color32::from_rgb(0, 204, 0),
+                        ),
+                        (
+                            TileType::Empty,
+                            "Vide",
+                            egui::Color32::from_rgb(200, 200, 200),
+                        ),
                     ],
                 };
 
@@ -115,9 +145,7 @@ pub fn tile_weights_ui_system(
 
             // Boutons d'action
             ui.horizontal(|ui| {
-                if ui.button("🎲 Générer").clicked() {
-                    events.write(GenerateWorldEvent);
-                }
+                if ui.button("🎲 Générer").clicked() {}
 
                 if ui
                     .button("🔄 Réinitialiser")
@@ -143,13 +171,16 @@ pub fn tile_weights_ui_system(
 }
 
 /// Système pour afficher les contrôles
-pub fn controls_help_ui_system(mut contexts: EguiContexts, keyboard: Res<ButtonInput<KeyCode>>, state: Res<State<GameState>>) {
-
+pub fn controls_help_ui_system(
+    mut contexts: EguiContexts,
+    keyboard: Res<ButtonInput<KeyCode>>,
+    state: Res<State<GameState>>,
+) {
     match state.get() {
-        GameState::InGame => {},
-        _ => return
+        GameState::InGame => {}
+        _ => return,
     }
-    
+
     if !keyboard.pressed(KeyCode::KeyP) {
         return;
     }

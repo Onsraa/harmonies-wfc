@@ -1,8 +1,6 @@
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::menu::GameState;
 use crate::systems::setup::initialize;
-use crate::systems::setup::*;
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy::window::PresentMode;
 
@@ -21,8 +19,9 @@ impl Plugin for SetupPlugin {
                 }),
                 ..default()
             }),
-            LogDiagnosticsPlugin::default(),
-            FrameTimeDiagnosticsPlugin::default(),
+            // LogDiagnosticsPlugin::default(),
+            // FrameTimeDiagnosticsPlugin::default(),
+            MeshPickingPlugin,
         ));
 
         // Add the state

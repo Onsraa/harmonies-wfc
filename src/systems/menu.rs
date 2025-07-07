@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::ui::*;
 
 #[derive(Component)]
 pub struct MainMenuUI;
@@ -12,7 +11,8 @@ pub struct QuitButton;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub enum GameState {
-    #[default] MainMenu,
+    #[default]
+    MainMenu,
     InGame,
     Paused,
     Settings,
@@ -20,7 +20,6 @@ pub enum GameState {
     SettingsSound,
     Quit,
 }
-
 
 pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     let bg_handle = asset_server.load("images/bg.png");
@@ -62,17 +61,12 @@ pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
                 Node {
                     margin: UiRect::new(Val::Px(0.0), Val::Px(0.0), Val::Px(0.0), Val::Px(100.0)),
                     ..default()
-                }
+                },
             ));
 
             // Play Button
             parent
-                .spawn((
-                    Button,
-                    button_node.clone(),
-                    PlayButton,
-                    MainMenuUI,
-                ))
+                .spawn((Button, button_node.clone(), PlayButton, MainMenuUI))
                 .with_children(|parent| {
                     parent.spawn((
                         Text::new("Play"),
@@ -87,12 +81,7 @@ pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
 
             // Settings Button
             parent
-                .spawn((
-                    Button,
-                    button_node.clone(),
-                    SettingsButton,
-                    MainMenuUI
-                ))
+                .spawn((Button, button_node.clone(), SettingsButton, MainMenuUI))
                 .with_children(|parent| {
                     parent.spawn((
                         Text::new("Settings"),
@@ -107,12 +96,7 @@ pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
 
             // Quit Button
             parent
-                .spawn((
-                    Button,
-                    button_node.clone(),
-                    QuitButton,
-                    MainMenuUI
-                ))
+                .spawn((Button, button_node.clone(), QuitButton, MainMenuUI))
                 .with_children(|parent| {
                     parent.spawn((
                         Text::new("Quit"),
@@ -126,7 +110,6 @@ pub fn setup_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
                 });
         });
 }
-
 
 pub fn handle_play_button(
     mut interaction_query: Query<
