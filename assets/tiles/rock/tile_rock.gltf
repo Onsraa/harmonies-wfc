@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.3.47",
+		"generator":"Khronos glTF Blender I/O v4.2.70",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -15,18 +15,18 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"rock",
-			"translation":[
-				0,
-				-0.5,
-				0
+			"name":"toche_3",
+			"scale":[
+				1.1995763778686523,
+				1.1995763778686523,
+				1.1995763778686523
 			]
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material.006",
+			"name":"roche_1.001",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -38,7 +38,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube.007",
+			"name":"Cube.026",
 			"primitives":[
 				{
 					"attributes":{
@@ -61,69 +61,69 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"rock Base Color",
-			"uri":"rock%20Base%20Color.png"
+			"name":"roche_1 Base Color",
+			"uri":"roche_1%20Base%20Color.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1225,
+			"count":1093,
 			"max":[
-				0.8147740960121155,
-				1.1260712146759033,
+				0.9219339489936829,
+				0.5024775266647339,
 				0.9462370276451111
 			],
 			"min":[
-				-0.8145655393600464,
-				-0.051078200340270996,
-				-0.9064262509346008
+				-1.108212947845459,
+				-0.5768474340438843,
+				-0.9583057165145874
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1225,
+			"count":1093,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1225,
+			"count":1093,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":1914,
+			"count":2304,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":14700,
+			"byteLength":13116,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":14700,
-			"byteOffset":14700,
+			"byteLength":13116,
+			"byteOffset":13116,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":9800,
-			"byteOffset":29400,
+			"byteLength":8744,
+			"byteOffset":26232,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3828,
-			"byteOffset":39200,
+			"byteLength":4608,
+			"byteOffset":34976,
 			"target":34963
 		}
 	],
@@ -135,7 +135,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":43028,
+			"byteLength":39584,
 			"uri":"tile_rock.bin"
 		}
 	]
