@@ -1,9 +1,6 @@
-// use crate::components::grid::tile::TileStack;
-use bevy::prelude::*;
-
-/// Événement pour déclencher une nouvelle génération
-#[derive(Event)]
-pub struct GenerateWorldEvent;
+// Événement pour déclencher une nouvelle génération
+// #[derive(Event)]
+// pub struct GenerateWorldEvent;
 
 // /// Système principal de génération WFC
 // pub fn wfc_generation_system(

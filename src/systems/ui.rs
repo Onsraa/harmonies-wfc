@@ -2,7 +2,6 @@ use crate::components::grid::tile::tile_type::TileType;
 use crate::globals::MAX_HEIGHT;
 use crate::resources::tile_weights::TileWeights;
 use crate::systems::menu::GameState;
-use crate::systems::wfc::v1::GenerateWorldEvent;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use egui::SliderClamping;
@@ -21,7 +20,6 @@ pub fn should_show_help(keyboard: Res<ButtonInput<KeyCode>>) -> bool {
 pub fn tile_weights_ui_system(
     mut contexts: EguiContexts,
     mut tile_weights: ResMut<TileWeights>,
-    mut events: EventWriter<GenerateWorldEvent>,
     keyboard: Res<ButtonInput<KeyCode>>,
     state: Res<State<GameState>>,
 ) {
@@ -147,9 +145,7 @@ pub fn tile_weights_ui_system(
 
             // Boutons d'action
             ui.horizontal(|ui| {
-                if ui.button("🎲 Générer").clicked() {
-                    events.write(GenerateWorldEvent);
-                }
+                if ui.button("🎲 Générer").clicked() {}
 
                 if ui
                     .button("🔄 Réinitialiser")

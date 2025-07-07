@@ -4,6 +4,7 @@ use crate::wfc::v2::HEX_3D_DIRECTIONS;
 use crate::wfc::v2::{Direction, TILE_COUNT};
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct WfcHexGrid {
     pub(crate) cells: Vec<WfcCell>,
     pub hex_to_index: HashMap<Hex, usize>,

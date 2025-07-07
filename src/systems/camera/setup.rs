@@ -29,7 +29,7 @@ pub fn load_skybox(
     asset_server: Res<AssetServer>,
     mut images: ResMut<Assets<Image>>,
     mut skybox_image: ResMut<SkyboxImage>,
-    mut cameras: Query<Entity, (With<Camera3d>, Without<Skybox>)>,
+    cameras: Query<Entity, (With<Camera3d>, Without<Skybox>)>,
 ) {
     if !skybox_image.is_loaded
         && asset_server
@@ -43,7 +43,6 @@ pub fn load_skybox(
                 image.height() as f32 / image.width() as f32
             );
 
-            // Convert regular 2D image to cubemap format
             if image.texture_descriptor.array_layer_count() == 1 {
                 image.reinterpret_stacked_2d_as_array(image.height() / image.width());
                 image.texture_view_descriptor = Some(TextureViewDescriptor {
@@ -52,7 +51,6 @@ pub fn load_skybox(
                 });
             }
 
-            // Now add the skybox to the camera
             for camera_entity in cameras.iter() {
                 commands.entity(camera_entity).insert(Skybox {
                     image: skybox_image.image_handle.clone(),

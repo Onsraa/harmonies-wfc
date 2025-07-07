@@ -1,7 +1,6 @@
 ﻿pub mod display;
 pub mod ops;
 
-use crate::components::grid::Orientation;
 use bevy::prelude::Component;
 
 #[derive(Component, PartialEq, Eq, Hash, Clone, Copy, Debug)]

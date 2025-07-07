@@ -1,8 +1,7 @@
 use crate::components::grid::hex::Hex;
 use crate::globals::{TILE_GAP, TILE_HEIGHT};
-use crate::systems::wfc::v1::GenerateWorldEvent;
+use crate::systems::wfc::v2::wfc::WfcSharedState;
 use crate::wfc::v2::cell::TileId;
-use crate::wfc::v2::controller::WfcController;
 use crate::wfc::v2::{CITY, CITY_TOP, FIELD, LEAVES, RIVER, ROCK, ROCK_TOP, TRUNK};
 use bevy::prelude::*;
 use bevy::scene::Scene;
@@ -17,6 +16,12 @@ pub struct TileVisual;
 pub struct SharedMeshes {
     pub meshes: HashMap<TileId, Handle<Scene>>,
 }
+
+#[derive(Event)]
+pub struct ResetGridVisuals;
+
+#[derive(Event)]
+pub struct UpdateGridVisuals;
 
 pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer>) {
     let mut meshes = HashMap::new();
@@ -74,26 +79,46 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
     commands.insert_resource(SharedMeshes { meshes });
 }
 
-pub fn render_tiles_system(
+pub fn reset_grid_visualization(
     mut commands: Commands,
-    mut regenerate_event: EventReader<GenerateWorldEvent>,
-    wfc_controller: Res<WfcController>,
-    shared_meshes: Res<SharedMeshes>,
-    hexes: Query<(Entity, &Hex, &Transform)>, // Include Entity in the query
-    existing_visuals: Query<Entity, With<TileVisual>>, // Query for entities with TileVisual
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut reset_event: EventReader<ResetGridVisuals>,
+    existing_visuals: Query<Entity, With<TileVisual>>,
 ) {
-    for _ in regenerate_event.read() {
+    for _ in reset_event.read() {
         for entity in existing_visuals.iter() {
             commands
                 .entity(entity)
                 .remove::<TileVisual>()
                 .remove::<SceneRoot>();
         }
+    }
+}
 
-        // Add new visuals
+pub fn render_new_tiles(
+    mut commands: Commands,
+    mut update_event: EventReader<UpdateGridVisuals>,
+    wfc_shared: Option<Res<WfcSharedState>>,
+    shared_meshes: Res<SharedMeshes>,
+    hexes: Query<(Entity, &Hex, &Transform), Without<TileVisual>>,
+) {
+    for _ in update_event.read() {
+        let Some(shared_state) = wfc_shared.as_ref() else {
+            println!("No WFC shared state available yet");
+            return;
+        };
+
+        let Ok(grid_guard) = shared_state.grid.try_lock() else {
+            println!("Could not lock WFC grid (busy)");
+            return;
+        };
+
+        let Some(grid) = grid_guard.as_ref() else {
+            println!("No WFC grid available yet");
+            return;
+        };
+
         for (entity, hex, transform) in hexes.iter() {
-            if let Some(cell) = wfc_controller.grid.get_hex_cell(hex) {
+            if let Some(cell) = grid.get_hex_cell(hex) {
                 if let Some(tile) = cell.get_collapsed_tile() {
                     if let Some(scene_handle) = shared_meshes.meshes.get(&tile) {
                         commands.entity(entity).insert((
