@@ -1,4 +1,6 @@
-﻿pub type TileId = u8;
+﻿use crate::wfc::v2::TILE_COUNT;
+
+pub type TileId = u8;
 pub type TilePossibilities = u16;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -21,11 +23,16 @@ impl WfcCell {
         self.possibilities & (1 << tile_id) != 0
     }
 
-    fn remove_possibility(&mut self, tile_id: TileId) {
+    pub fn remove_possibility(&mut self, tile_id: TileId) {
         if self.is_possible(tile_id) {
             self.possibilities &= !(1 << tile_id);
             self.entropy -= 1;
         }
+    }
+
+    pub fn reset(&mut self) {
+        self.possibilities = (1u16 << TILE_COUNT) - 1;
+        self.entropy = TILE_COUNT;
     }
 
     #[inline]

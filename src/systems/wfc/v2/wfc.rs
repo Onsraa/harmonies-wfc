@@ -23,15 +23,18 @@ pub struct WfcSharedState {
     pub update_signal: Arc<Mutex<bool>>,
 }
 
-pub struct WfcPlugin;
+#[derive(Resource)]
+pub struct WfcStatus {
+    pub has_run: bool,
+    pub auto_restart: bool,
+}
 
-impl Plugin for WfcPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_event::<UpdateGridVisuals>();
-        app.add_systems(
-            Update,
-            (setup_wfc_task_when_ready, check_wfc_progress).chain(),
-        );
+impl Default for WfcStatus {
+    fn default() -> Self {
+        Self {
+            has_run: false,
+            auto_restart: false, // Set to true if you want auto-restart behavior
+        }
     }
 }
 
@@ -39,8 +42,15 @@ pub fn setup_wfc_task_when_ready(
     mut commands: Commands,
     hexes: Query<&Hex>,
     wfc_task: Option<Res<WfcTask>>,
+    mut wfc_status: ResMut<WfcStatus>,
 ) {
+    // Don't start if task already exists
     if wfc_task.is_some() {
+        return;
+    }
+
+    // Don't auto-restart unless explicitly enabled
+    if wfc_status.has_run && !wfc_status.auto_restart {
         return;
     }
 
@@ -50,6 +60,7 @@ pub fn setup_wfc_task_when_ready(
     }
 
     println!("Starting WFC async task with {} hexes", hex_vec.len());
+    println!("Press R to restart WFC after completion");
 
     let shared_grid = Arc::new(Mutex::new(None));
     let is_complete = Arc::new(Mutex::new(false));
@@ -110,6 +121,9 @@ pub fn setup_wfc_task_when_ready(
             }
         }
     });
+
+    // Mark that we've started a task
+    wfc_status.has_run = true;
 
     commands.insert_resource(WfcSharedState {
         grid: Arc::clone(&shared_grid),
