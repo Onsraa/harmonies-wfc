@@ -2,7 +2,9 @@
 use crate::wfc::v2::cell::TileId;
 use crate::wfc::v2::grid::WfcHexGrid;
 use crate::wfc::v2::solver::{idx, WfcSolver};
-use crate::wfc::v2::{get_opposite_direction, Direction, WfcError, TILE_COUNT};
+use crate::wfc::v2::{
+    get_opposite_direction, is_tile_valid_at_level, Direction, WfcError, TILE_COUNT,
+};
 use bevy::prelude::Resource;
 use rand::Rng;
 use std::collections::HashSet;
@@ -212,7 +214,6 @@ impl WfcController {
                 }
 
                 if compatible_tiles == 0 && self.grid.cells[neighbor_index].possibilities != 0 {
-                    // Still contradiction - repair zone might be too small
                     eprintln!(
                         "Contradiction persists after repair at cell {}",
                         neighbor_index
@@ -265,6 +266,7 @@ impl WfcController {
 
     fn choose_random_tile(&self, cell_idx: usize) -> Result<u8, WfcError> {
         let cell = &self.grid.cells[cell_idx];
+        let cell_level = self.grid.index_to_hex[cell_idx].level;
 
         if cell.is_contradiction() {
             eprintln!("Contradiction found at cell {}: no valid tiles", cell_idx);
@@ -280,7 +282,7 @@ impl WfcController {
         let mut choices = Vec::with_capacity(8);
 
         for tile_id in 0..TILE_COUNT {
-            if cell.is_possible(tile_id) {
+            if cell.is_possible(tile_id) && is_tile_valid_at_level(tile_id, cell_level) {
                 choices.push(tile_id);
             }
         }

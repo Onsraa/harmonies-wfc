@@ -51,8 +51,7 @@ impl WfcSolver {
 
     fn setup_hexagonal_rules() -> [TilePossibilities; 72] {
         let mut adjacency = [0u16; 72];
-        // FIX: Include all 9 tiles (0-8) in the mask
-        const ALL_TILES: TilePossibilities = 0x1FF; // 511 in decimal, bits for tiles 0-8
+        const ALL_TILES: TilePossibilities = 0x1FF;
 
         for tile_id in 0..=TILE_COUNT {
             for hex_dir in 0..6 {

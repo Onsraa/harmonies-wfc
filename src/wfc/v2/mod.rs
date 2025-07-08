@@ -1,5 +1,9 @@
 ﻿use crate::components::grid::hex::Hex;
 use crate::wfc::v2::cell::TileId;
+use std::convert::Into;
+use std::hash::Hash;
+use std::iter::Iterator;
+
 pub mod cell;
 pub mod controller;
 pub mod grid;
@@ -23,6 +27,13 @@ pub const CITY_TOP: TileId = 5;
 pub const ROCK: TileId = 6;
 pub const ROCK_TOP: TileId = 7;
 pub const EMPTY: TileId = 8; // Special value, outside normal range
+
+pub fn is_tile_valid_at_level(tile_id: TileId, level: i32) -> bool {
+    match tile_id {
+        LEAVES => level > 0,
+        _ => true,
+    }
+}
 
 pub type Direction = u8;
 
