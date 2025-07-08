@@ -1,7 +1,7 @@
-use crate::components::grid::hex::Hex;
 use crate::components::boid::Obstacle;
+use crate::components::grid::hex::Hex;
 use crate::components::spatial::ObstacleInKDTree;
-use crate::globals::{TILE_GAP, TILE_HEIGHT, HEX_SIZE};
+use crate::globals::{HEX_SIZE, TILE_GAP, TILE_HEIGHT};
 use crate::systems::wfc::v2::wfc::WfcSharedState;
 use crate::wfc::v2::cell::TileId;
 use crate::wfc::v2::{CITY, CITY_TOP, FIELD, LEAVES, RIVER, ROCK, ROCK_TOP, TRUNK};
@@ -9,11 +9,9 @@ use bevy::prelude::*;
 use bevy::scene::Scene;
 use std::collections::HashMap;
 
-/// Marqueur pour les entités visuelles des tuiles
 #[derive(Component)]
 pub struct TileVisual;
 
-/// Resource pour stocker les scènes partagées
 #[derive(Resource)]
 pub struct SharedMeshes {
     pub meshes: HashMap<TileId, Handle<Scene>>,
@@ -77,14 +75,27 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
 pub fn reset_grid_visualization(
     mut commands: Commands,
     mut reset_event: EventReader<ResetGridVisuals>,
-    existing_visuals: Query<Entity, With<TileVisual>>,
+    mut existing_visuals: Query<(Entity, &Children), With<TileVisual>>,
+    wfc_shared: Option<Res<WfcSharedState>>,
 ) {
     for _ in reset_event.read() {
-        for entity in existing_visuals.iter() {
+        println!(
+            "Resetting grid visuals - found {} visual entities",
+            existing_visuals.iter().count()
+        );
+
+        for (entity, children) in existing_visuals.iter_mut() {
+            for child in children.iter() {
+                commands.entity(child).despawn();
+            }
+
             commands
                 .entity(entity)
                 .remove::<TileVisual>()
-                .remove::<SceneRoot>();
+                .remove::<SceneRoot>()
+                .remove::<Obstacle>()
+                .remove::<ObstacleInKDTree>()
+                .remove::<Children>(); // Also remove the Children component
         }
     }
 }
@@ -124,8 +135,10 @@ pub fn render_new_tiles(
                                 TILE_HEIGHT / 2.0 + hex.level as f32 * (TILE_HEIGHT + TILE_GAP),
                                 transform.translation.z,
                             )
-                                .with_scale(Vec3::splat(2.0)),
-                            Obstacle { radius: HEX_SIZE * 1.5 },
+                            .with_scale(Vec3::splat(2.0)),
+                            Obstacle {
+                                radius: HEX_SIZE * 1.5,
+                            },
                             ObstacleInKDTree,
                         ));
                     }

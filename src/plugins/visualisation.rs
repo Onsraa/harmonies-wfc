@@ -10,7 +10,7 @@ impl Plugin for VisualizationPlugin {
         app.add_systems(Startup, setup_shared_meshes);
         app.add_systems(
             Update,
-            (render_new_tiles,), // .run_if(in_state(GameState::InGame)),
+            (render_new_tiles, reset_grid_visualization), // .run_if(in_state(GameState::InGame)),
         );
     }
 }
