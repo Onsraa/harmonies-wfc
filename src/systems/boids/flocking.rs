@@ -1,5 +1,5 @@
 use crate::components::boid::{Acceleration, Boid, Obstacle, Velocity};
-use crate::components::spatial::NNTree3D;
+use crate::components::spatial::{NNTree3D, ObstacleTree3D};
 use crate::events::ApplyForceEvent;
 use crate::globals::{BOID_MAX_HEIGHT, BOID_MIN_HEIGHT, BOID_ZONE_SIZE};
 use crate::resources::boids::{BoidSettings, GroupsTargets};
@@ -88,34 +88,49 @@ pub fn flocking_system(
 
 pub fn avoid_obstacles(
     boid_query: Query<(Entity, &Transform), With<Boid>>,
-    obstacle_query: Query<(&Transform, &Obstacle), Without<Boid>>,
+    obstacle_query: Query<(&Transform, &Obstacle), With<Obstacle>>,
     mut event_writer: EventWriter<ApplyForceEvent>,
     boid_settings: Res<BoidSettings>,
+    obstacle_tree: Option<Res<ObstacleTree3D>>,
 ) {
-    for (entity, transform) in boid_query.iter() {
-        let position = transform.translation;
+    let Some(obstacle_tree) = obstacle_tree else {
+        return;
+    };
+
+    for (entity, boid_transform) in boid_query.iter() {
+        let position = boid_transform.translation;
         let mut avoidance_force = Vec3::ZERO;
 
-        for (obstacle_transform, obstacle) in obstacle_query.iter() {
-            let obstacle_pos = obstacle_transform.translation;
-            let to_obstacle = obstacle_pos - position;
-            let distance = to_obstacle.length();
+        // Utiliser le KD-Tree pour trouver seulement les obstacles proches
+        let search_radius = boid_settings.separation_range * 2.5;
 
-            // Distance depuis la surface de l'obstacle
-            let surface_distance = distance - obstacle.radius;
+        for (_, obstacle_entity) in obstacle_tree.within_distance(position, search_radius) {
+            if let Some(obstacle_entity) = obstacle_entity {
+                if let Ok((obstacle_transform, obstacle)) = obstacle_query.get(obstacle_entity) {
+                    let obstacle_pos = obstacle_transform.translation;
+                    let to_obstacle = obstacle_pos - position;
+                    let distance = to_obstacle.length();
 
-            if surface_distance < boid_settings.separation_range * 2.0 && surface_distance > 0.0 {
-                // Force de répulsion inversement proportionnelle à la distance
-                let repulsion_dir = (position - obstacle_pos).normalize_or_zero();
-                let strength = 1.0 - (surface_distance / (boid_settings.separation_range * 2.0));
-                avoidance_force += repulsion_dir * strength * boid_settings.collision_coeff;
+                    let surface_distance = distance - obstacle.radius;
+
+                    if surface_distance < boid_settings.separation_range * 2.0
+                        && surface_distance > 0.0
+                    {
+                        let repulsion_dir = (position - obstacle_pos).normalize_or_zero();
+                        let strength =
+                            1.0 - (surface_distance / (boid_settings.separation_range * 2.0));
+                        avoidance_force += repulsion_dir * strength * boid_settings.collision_coeff;
+                    }
+                }
             }
         }
 
-        event_writer.write(ApplyForceEvent {
-            entity,
-            force: avoidance_force,
-        });
+        if avoidance_force != Vec3::ZERO {
+            event_writer.write(ApplyForceEvent {
+                entity,
+                force: avoidance_force,
+            });
+        }
     }
 }
 

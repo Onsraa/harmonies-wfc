@@ -1,5 +1,6 @@
 use crate::components::grid::hex::Hex;
 use crate::components::boid::Obstacle;
+use crate::components::spatial::ObstacleInKDTree;
 use crate::globals::{TILE_GAP, TILE_HEIGHT, HEX_SIZE};
 use crate::systems::wfc::v2::wfc::WfcSharedState;
 use crate::wfc::v2::cell::TileId;
@@ -123,7 +124,8 @@ pub fn render_new_tiles(
                                 transform.translation.z,
                             )
                                 .with_scale(Vec3::splat(2.0)),
-                            Obstacle { radius: HEX_SIZE }, 
+                            Obstacle { radius: HEX_SIZE * 1.5 },
+                            ObstacleInKDTree,
                         ));
                     }
                 }
