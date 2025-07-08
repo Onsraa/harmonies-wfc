@@ -59,9 +59,10 @@ pub fn setup_shared_meshes(mut commands: Commands, asset_server: Res<AssetServer
         TRUNK,
         asset_server.load("tiles/tronc/tile_tronc.gltf#Scene0"),
     );
+    // LEAVES
     meshes.insert(
         LEAVES,
-        asset_server.load("tiles/tronc/tile_leaves.gltf#Scene0"),
+        asset_server.load("tiles/leaves/tile_leaf.gltf#Scene0"),
     );
 
     // Field
