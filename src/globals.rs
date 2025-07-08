@@ -10,8 +10,8 @@ pub const TILE_HEIGHT: f32 = 2.0;
 pub const TILE_GAP: f32 = 0.1;
 
 // Paramètres boids adaptés à la grille hexagonale
-pub const BOID_MIN_HEIGHT: f32 = 2.0;
-pub const BOID_MAX_HEIGHT: f32 = 30.0; 
+pub const BOID_MIN_HEIGHT: f32 = 1.0;
+pub const BOID_MAX_HEIGHT: f32 = 25.0; 
 pub const BOID_ZONE_SIZE: f32 = 500.0; 
 
 pub const GROUP_COUNT: u8 = 5; // Nombre de groupes distincts pour les boids

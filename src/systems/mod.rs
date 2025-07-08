@@ -6,3 +6,4 @@ pub mod ui;
 pub mod wfc;
 pub mod window;
 pub mod boids;
+pub mod clouds;

@@ -7,3 +7,4 @@ pub mod wfc;
 pub mod menu;
 pub mod boids;
 pub mod spatial;
+pub mod clouds;
