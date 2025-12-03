@@ -1,14 +1,17 @@
 
 # Harmonies WFC
 
-## Controls
+Projet inspiré du jeu de société harmonies. Génération procédurale de terrain avec un algorithme Wave Function Collapse.
 
-### Camera
+<p align="center">
+  <img src="https://github.com/Onsraa/harmonies-wfc/blob/develop/assets/gifs/harmonies-box.png?raw=true" alt="Harmonies Box" />
+  <br>
+  <u>Jeu de société Harmonies</u>
+</p>
 
-- **WASD**: Move camera
-- **Right mouse button**: Rotate camera
-- **Scroll**: Elevate camera
-
-# a faire pour : 
-boids (possiblité à faire) 
-
+Projet inspiré du jeu de société harmonies
+<p align="center">
+  <img src="https://github.com/Onsraa/harmonies-wfc/blob/develop/assets/gifs/harmonies-clip.gif?raw=true"/>
+  <br>
+  <u>Démonstration du jeu</u>
+</p>
