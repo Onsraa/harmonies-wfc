@@ -9,7 +9,6 @@ Projet inspiré du jeu de société harmonies. Génération procédurale de terr
   <u>Jeu de société Harmonies</u>
 </p>
 
-Projet inspiré du jeu de société harmonies
 <p align="center">
   <img src="https://github.com/Onsraa/harmonies-wfc/blob/develop/assets/gifs/harmonies-clip.gif?raw=true"/>
   <br>
