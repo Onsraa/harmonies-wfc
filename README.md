@@ -4,7 +4,7 @@
 Projet inspiré du jeu de société harmonies. Génération procédurale de terrain avec un algorithme Wave Function Collapse.
 
 <p align="center">
-  <img src="https://github.com/Onsraa/harmonies-wfc/blob/develop/assets/gifs/harmonies-box.png?raw=true" alt="Harmonies Box" />
+  <img src="https://github.com/Onsraa/harmonies-wfc/blob/develop/assets/gifs/harmonies-box.png?raw=true" width="500" alt="Harmonies Box" />
   <br>
   <u>Jeu de société Harmonies</u>
 </p>
